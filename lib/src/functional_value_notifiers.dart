@@ -15,10 +15,10 @@ abstract class FunctionalValueNotifier<TIn, TOut> extends ValueNotifier<TOut> {
 
   @override
   void removeListener(VoidCallback listener) {
+    super.removeListener(listener);
     if (!hasListeners) {
       previousInChain.removeListener(internalHandler);
     }
-    super.removeListener(listener);
   }
 
   @override

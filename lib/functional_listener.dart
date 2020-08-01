@@ -68,6 +68,14 @@ extension FunctionaListener<T> on ValueListenable<T> {
   /// [selector] function returns true. Because the selector function is called on
   /// every new value you can change the filter during runtime.
   ///
+  /// ATTENTION: Due to the nature of ValueListeners that they always have to have
+  /// a value the filter can't work on the initial value. Therefore it's not
+  /// advised to use [where] inside the Widget tree if you use `setState` because that
+  /// will recreate the underlying `WhereValueNotifier` again passing through the lates
+  /// value of the `this` even if it doesn't fulfill the [selector] condition.
+  /// Therefore it's better not to use it directly in the Widget tree but in
+  /// your state objects
+  ///
   /// example: lets only print even values
   /// ```
   /// final sourceListenable = ValueNotifier<int>(0);
@@ -85,6 +93,10 @@ extension FunctionaListener<T> on ValueListenable<T> {
   /// `ValueListenable` will not emit an updated value before at least
   /// [timpeout] time has passed since the less value change. All value changes
   /// in-between will be discarded.
+  ///
+  /// ATTENTION: If you use [debounce] inside the Widget tree in combination with
+  /// `setState` it can happen that debounce doesn't have any effect. Better to use it
+  /// inside your model objects
   ///
   /// example:
   /// ```
