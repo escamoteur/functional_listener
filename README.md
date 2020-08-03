@@ -69,7 +69,7 @@ As all the extension function (with the exception of `listen`) return a new `Val
 ``` 
 
 ## debounce()
-If you don't want or can't handle too rapid value changes `debounce` is your friend. It only propagate values if there is a minimum duration between two value changes. Most typical example is you have a search function that polls a REST API and in every change of the search term you execute a http request. To avoid overloading your REST server you probably want to avoid that a new request is made on every keypress. I makes much more sense to wait till the user stops modifying the search term for a moment.
+If you don't want or can't handle too rapid value changes `debounce` is your friend. It only propagate values if there is a pause after a value changes. Most typical example is you have a search function that polls a REST API and in every change of the search term you execute a http request. To avoid overloading your REST server you probably want to avoid that a new request is made on every keypress. I makes much more sense to wait till the user stops modifying the search term for a moment.
 
 
 ```Dart

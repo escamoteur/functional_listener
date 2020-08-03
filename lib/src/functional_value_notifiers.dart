@@ -70,10 +70,9 @@ class DebouncedValueNotifier<T> extends FunctionalValueNotifier<T, T> {
     this.debounceDuration,
   ) : super(initialValue, previousInChain) {
     internalHandler = () {
-      if (debounceTimer == null) {
-        debounceTimer = Timer(debounceDuration, () => debounceTimer = null);
-        value = previousInChain.value;
-      }
+      debounceTimer?.cancel();
+      debounceTimer =
+          Timer(debounceDuration, () => value = previousInChain.value);
     };
     previousInChain.addListener(internalHandler);
   }

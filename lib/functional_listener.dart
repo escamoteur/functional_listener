@@ -91,8 +91,8 @@ extension FunctionaListener<T> on ValueListenable<T> {
   /// want or can handle them all [debounce] can help you.
   /// If you add a [debounce] to your listenable processing pipeline the returned
   /// `ValueListenable` will not emit an updated value before at least
-  /// [timpeout] time has passed since the less value change. All value changes
-  /// in-between will be discarded.
+  /// [timpeout] time has passed since the last value change. All value changes
+  /// before will be discarded.
   ///
   /// ATTENTION: If you use [debounce] inside the Widget tree in combination with
   /// `setState` it can happen that debounce doesn't have any effect. Better to use it
