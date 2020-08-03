@@ -1,8 +1,8 @@
 name: functional_listener
-description: A new Flutter package project.
-version: 1.0.0
-author:
-homepage:
+description: An rx like extension methods on ValueListenable type, that lets you work with ValueNotifiers almost like with Streams
+version: 1.0.1
+author: Thomas Burkhart
+homepage: https://github.com/escamoteur/functional_listener
 
 environment:
   sdk: ">=2.7.0 <3.0.0"

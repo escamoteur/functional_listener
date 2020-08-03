@@ -1,3 +1,7 @@
+## [1.0.1] - 03.08.2020
+
+* Added package description
+
 ## [1.0.0] - 03.08.2020
 
 * Added Example and some bug fixes

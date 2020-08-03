@@ -1,6 +1,5 @@
 name: functiona_listerner_example
-description: rx like extension methods on ValueListenable type, that lets you work with ValueNotifiers almost like with Streams
-
+description: demo project 
 version: 1.0.0+1
 
 environment:
