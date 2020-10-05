@@ -190,8 +190,8 @@ extension FunctionaListener<T> on ValueListenable<T> {
   ///     final listenable3 = ValueNotifier<int>(0);
   ///     final listenable4 = ValueNotifier<int>(0);
   ///
-  ///     listenable1.mergeWith([listenable2, listenable3, listenable4]).listen(
-  ///         (x, _) => print(x));
+  ///     listenable1.mergeWith([listenable2, listenable3, listenable4])
+  ///          .listen((x, _) => print(x));
   ///
   ///     listenable2.value = 42;
   ///     listenable1.value = 43;
