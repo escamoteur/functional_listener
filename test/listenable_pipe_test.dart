@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:functional_listener/functional_listener.dart';
 
 void main() {
@@ -130,6 +129,36 @@ void main() {
     listenable1.value = 46;
 
     expect(destValues.length, 4);
+  });
+  test('mergeWith Test', () {
+    final listenable1 = ValueNotifier<int>(0);
+    final listenable2 = ValueNotifier<int>(0);
+    final listenable3 = ValueNotifier<int>(0);
+    final listenable4 = ValueNotifier<int>(0);
+
+    final destValues = <int>[];
+    final subscription = listenable1
+        .mergeWith([listenable2, listenable3, listenable4]).listen((x, _) {
+      destValues.add(x);
+    });
+
+    listenable2.value = 42;
+    listenable1.value = 43;
+    listenable4.value = 44;
+    listenable3.value = 45;
+    listenable1.value = 46;
+
+    expect(destValues[0], 42);
+    expect(destValues[1], 43);
+    expect(destValues[2], 44);
+    expect(destValues[3], 45);
+    expect(destValues[4], 46);
+
+    subscription.cancel();
+
+    listenable1.value = 47;
+
+    expect(destValues.length, 5);
   });
 }
 

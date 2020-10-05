@@ -1,3 +1,7 @@
+## [1.1.1] - 05.10.2020
+
+* Added mergeWith() function
+
 ## [1.0.1] - 03.08.2020
 
 * Added package description

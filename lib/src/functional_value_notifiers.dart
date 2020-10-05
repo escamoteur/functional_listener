@@ -114,3 +114,37 @@ class CombiningValueNotifier<TIn1, TIn2, TOut> extends ValueNotifier<TOut> {
     super.dispose();
   }
 }
+
+class MergingValueNotifiers<T> extends FunctionalValueNotifier<T, T> {
+  final List<ValueListenable<T>> mergeWith;
+  List<VoidCallback> disposeFuncs;
+
+  MergingValueNotifiers(
+    ValueListenable<T> previousInChain,
+    this.mergeWith,
+    T initialValue,
+  ) : super(initialValue, previousInChain) {
+    disposeFuncs =
+        (mergeWith..add(previousInChain)).map<VoidCallback>((notifier) {
+      final notifyHandler = () => value = notifier.value;
+      notifier.addListener(notifyHandler);
+      return () => notifier.removeListener(notifyHandler);
+    }).toList();
+  }
+
+  @override
+  void removeListener(VoidCallback listener) {
+    if (!hasListeners) {
+      disposeFuncs.forEach(_callSelf);
+    }
+    super.removeListener(listener);
+  }
+
+  void _callSelf(VoidCallback handler) => handler.call();
+
+  @override
+  void dispose() {
+    disposeFuncs.forEach(_callSelf);
+    super.dispose();
+  }
+}

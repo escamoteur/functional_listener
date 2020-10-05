@@ -105,6 +105,28 @@ intNotifier.combineLastest<String,StringIntWrapper>(stringNotifier, (i,s)
    => StringIntWrapper(s,i)).listen(print);
 ```
 
+## mergeWith
+Merges value changes of one `ValueListenable` together with value changes of a List of
+`ValueListenables` so that when ever any of them changes the result of
+`mergeWith()` will change too.
+
+```dart
+final listenable1 = ValueNotifier<int>(0);
+final listenable2 = ValueNotifier<int>(0);
+final listenable3 = ValueNotifier<int>(0);
+final listenable4 = ValueNotifier<int>(0);
+
+listenable1.mergeWith([listenable2, listenable3, listenable4]).listen(
+    (x, _) => print(x));
+
+listenable2.value = 42;
+listenable1.value = 43;
+listenable4.value = 44;
+listenable3.value = 45;
+listenable1.value = 46;
+```
+Will print 42,43,44,45,46
+
 
 For details on the functions check the source documentation, the tests and the example. 
 

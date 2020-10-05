@@ -5,7 +5,9 @@ include: package:lint/analysis_options_package.yaml
     
 linter:
   rules:
-    - always_declare_return_types
+    always_declare_return_types: true
+
+    prefer_function_declarations_over_variables: false
     # ------ Disable individual rules ----- #
     #                 ---                   #
     # Turn off what you don't like.         #
