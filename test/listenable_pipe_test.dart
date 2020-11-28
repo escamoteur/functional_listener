@@ -90,16 +90,12 @@ void main() {
         .listen((x, _) => destValues.add(x));
 
     listenable.value = 42;
-    await Future.delayed(const Duration(milliseconds: 100));
     listenable.value = 43;
-    await Future.delayed(const Duration(milliseconds: 100));
     listenable.value = 44;
-    await Future.delayed(const Duration(milliseconds: 350));
     listenable.value = 45;
-    await Future.delayed(const Duration(milliseconds: 550));
-    listenable.value = 46;
+    await Future.delayed(const Duration(milliseconds: 500));
 
-    expect(destValues, [42, 45, 46]);
+    expect(destValues, [45]);
   });
 
   test('combineLatest Test', () {

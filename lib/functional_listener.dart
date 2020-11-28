@@ -91,7 +91,7 @@ extension FunctionaListener<T> on ValueListenable<T> {
   /// want or can handle them all [debounce] can help you.
   /// If you add a [debounce] to your listenable processing pipeline the returned
   /// `ValueListenable` will not emit an updated value before at least
-  /// [timpeout] time has passed since the last value change. All value changes
+  /// [timeOut] time has passed since the last value change. All value changes
   /// before will be discarded.
   ///
   /// ATTENTION: If you use [debounce] inside the Widget tree in combination with
@@ -107,17 +107,12 @@ extension FunctionaListener<T> on ValueListenable<T> {
   ///     .listen((x, _) => print(x));
   ///
   /// listenable.value = 42;
-  /// await Future.delayed(const Duration(milliseconds: 100));
   /// listenable.value = 43;
-  /// await Future.delayed(const Duration(milliseconds: 100));
   /// listenable.value = 44;
-  /// await Future.delayed(const Duration(milliseconds: 350));
   /// listenable.value = 45;
-  /// await Future.delayed(const Duration(milliseconds: 550));
-  /// listenable.value = 46;
-  ///
+  /// await Future.delayed(const Duration(milliseconds: 500));
   /// ```
-  ///  will print out 42,45,46
+  ///  will print out 45
   ///
   ValueListenable<T> debounce(Duration timeOut) {
     return DebouncedValueNotifier(this.value, this, timeOut);
