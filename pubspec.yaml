@@ -5,7 +5,7 @@ author: Thomas Burkhart
 homepage: https://github.com/escamoteur/functional_listener
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0-0 <3.0.0"
   flutter: ">=1.17.0 <2.0.0"
 
 dependencies:
@@ -13,9 +13,9 @@ dependencies:
     sdk: flutter
 
 dev_dependencies:
-  lint:
   flutter_test:
     sdk: flutter
+  lint:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

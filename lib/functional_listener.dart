@@ -16,7 +16,7 @@ extension FunctionaListener<T> on ValueListenable<T> {
   /// let you work with a `ValueListenable` as it should be by installing a
   /// [handler] function that is called on any value change of `this` and gets
   /// the new value passed as an argument.
-  /// It returns a subscription object that lets you stopp the [handler] from
+  /// It returns a subscription object that lets you stop the [handler] from
   /// being called by calling [cancel()] on the subscription.
   /// The [handler] get the subscription object passed on every call so that it
   /// is possible to uninstall the [handler] from the [handler] itself.
@@ -38,14 +38,14 @@ extension FunctionaListener<T> on ValueListenable<T> {
       void Function(T, ListenableSubscription) handler) {
     final subscription = ListenableSubscription(this);
     subscription.handler = () => handler(this.value, subscription);
-    this.addListener(subscription.handler);
+    this.addListener(subscription.handler!);
     return subscription;
   }
 
   ///
   /// converts a ValueListenable to another type [T] by returning a new connected
   /// `ValueListenable<T>`
-  /// on each value change of `this` the conversion funcion
+  /// on each value change of `this` the conversion function
   /// [convert] is called to do the type conversion
   ///
   /// example (lets pretend that print wouldn't automatically call toString):
@@ -71,7 +71,7 @@ extension FunctionaListener<T> on ValueListenable<T> {
   /// ATTENTION: Due to the nature of ValueListeners that they always have to have
   /// a value the filter can't work on the initial value. Therefore it's not
   /// advised to use [where] inside the Widget tree if you use `setState` because that
-  /// will recreate the underlying `WhereValueNotifier` again passing through the lates
+  /// will recreate the underlying `WhereValueNotifier` again passing through the latest
   /// value of the `this` even if it doesn't fulfill the [selector] condition.
   /// Therefore it's better not to use it directly in the Widget tree but in
   /// your state objects
@@ -206,7 +206,7 @@ extension FunctionaListener<T> on ValueListenable<T> {
 /// handler that you passed to it.
 class ListenableSubscription {
   final ValueListenable endOfPipe;
-  VoidCallback handler;
+  VoidCallback? handler;
   bool canceled = false;
 
   ListenableSubscription(this.endOfPipe);
@@ -216,7 +216,9 @@ class ListenableSubscription {
   void cancel() {
     assert(handler != null);
     if (!canceled) {
-      endOfPipe.removeListener(handler);
+      if (handler != null) {
+        endOfPipe.removeListener(handler!);
+      }
       canceled = true;
     }
   }
