@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 ///
 abstract class FunctionalValueNotifier<TIn, TOut> extends ValueNotifier<TOut> {
   final ValueListenable<TIn> previousInChain;
-  VoidCallback internalHandler;
+  late VoidCallback internalHandler;
 
   FunctionalValueNotifier(
     TOut initialValue,
@@ -61,7 +61,7 @@ class WhereValueNotifier<T> extends FunctionalValueNotifier<T, T> {
 }
 
 class DebouncedValueNotifier<T> extends FunctionalValueNotifier<T, T> {
-  Timer debounceTimer;
+  late Timer debounceTimer;
   Duration debounceDuration;
 
   DebouncedValueNotifier(
@@ -70,7 +70,7 @@ class DebouncedValueNotifier<T> extends FunctionalValueNotifier<T, T> {
     this.debounceDuration,
   ) : super(initialValue, previousInChain) {
     internalHandler = () {
-      debounceTimer?.cancel();
+      debounceTimer.cancel();
       debounceTimer =
           Timer(debounceDuration, () => value = previousInChain.value);
     };
@@ -84,7 +84,7 @@ class CombiningValueNotifier<TIn1, TIn2, TOut> extends ValueNotifier<TOut> {
   final ValueListenable<TIn1> previousInChain1;
   final ValueListenable<TIn2> previousInChain2;
   final CombiningFunction2<TIn1, TIn2, TOut> combiner;
-  VoidCallback internalHandler;
+  late VoidCallback internalHandler;
 
   CombiningValueNotifier(
     TOut initialValue,
@@ -117,7 +117,7 @@ class CombiningValueNotifier<TIn1, TIn2, TOut> extends ValueNotifier<TOut> {
 
 class MergingValueNotifiers<T> extends FunctionalValueNotifier<T, T> {
   final List<ValueListenable<T>> mergeWith;
-  List<VoidCallback> disposeFuncs;
+  late List<VoidCallback> disposeFuncs;
 
   MergingValueNotifiers(
     ValueListenable<T> previousInChain,
