@@ -1,3 +1,6 @@
+## [1.1.1] - 30.11.2020
+
+* Fixes in documentation and tests 
 ## [1.1.0] - 05.10.2020
 
 * Added mergeWith() function

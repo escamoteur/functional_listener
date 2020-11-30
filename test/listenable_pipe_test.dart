@@ -99,7 +99,7 @@ void main() {
     await Future.delayed(const Duration(milliseconds: 550));
     listenable.value = 46;
 
-    expect(destValues, [42, 45, 46]);
+    expect(destValues, [45]);
   });
 
   test('combineLatest Test', () {

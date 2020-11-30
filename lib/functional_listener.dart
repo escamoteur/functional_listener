@@ -117,7 +117,7 @@ extension FunctionaListener<T> on ValueListenable<T> {
   /// listenable.value = 46;
   ///
   /// ```
-  ///  will print out 42,45,46
+  ///  will print out 45
   ///
   ValueListenable<T> debounce(Duration timeOut) {
     return DebouncedValueNotifier(this.value, this, timeOut);
