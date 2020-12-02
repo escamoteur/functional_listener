@@ -64,9 +64,8 @@ void main() {
     final listenable = ValueNotifier<int>(0);
 
     final destValues = <int>[];
-    final subscription = listenable
-        .where(((x) => x.isEven) as bool Function(int))
-        .listen((x, _) => destValues.add(x));
+    final subscription =
+        listenable.where((x) => x.isEven).listen((x, _) => destValues.add(x));
 
     listenable.value = 42;
     listenable.value = 43;
@@ -110,9 +109,7 @@ void main() {
     final destValues = <StringIntWrapper>[];
     final subscription = listenable1
         .combineLatest<String, StringIntWrapper>(
-            listenable2,
-            ((i, s) => StringIntWrapper(s, i)) as StringIntWrapper Function(
-                int, String))
+            listenable2, (i, s) => StringIntWrapper(s, i))
         .listen((x, _) {
       destValues.add(x);
     });

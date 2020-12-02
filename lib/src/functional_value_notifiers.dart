@@ -61,7 +61,7 @@ class WhereValueNotifier<T> extends FunctionalValueNotifier<T, T> {
 }
 
 class DebouncedValueNotifier<T> extends FunctionalValueNotifier<T, T> {
-  late Timer debounceTimer;
+  Timer? debounceTimer;
   Duration debounceDuration;
 
   DebouncedValueNotifier(
@@ -70,7 +70,7 @@ class DebouncedValueNotifier<T> extends FunctionalValueNotifier<T, T> {
     this.debounceDuration,
   ) : super(initialValue, previousInChain) {
     internalHandler = () {
-      debounceTimer.cancel();
+      debounceTimer?.cancel();
       debounceTimer =
           Timer(debounceDuration, () => value = previousInChain.value);
     };
@@ -100,11 +100,11 @@ class CombiningValueNotifier<TIn1, TIn2, TOut> extends ValueNotifier<TOut> {
 
   @override
   void removeListener(VoidCallback listener) {
+    super.removeListener(listener);
     if (!hasListeners) {
       previousInChain1.removeListener(internalHandler);
       previousInChain2.removeListener(internalHandler);
     }
-    super.removeListener(listener);
   }
 
   @override
@@ -124,20 +124,21 @@ class MergingValueNotifiers<T> extends FunctionalValueNotifier<T, T> {
     this.mergeWith,
     T initialValue,
   ) : super(initialValue, previousInChain) {
-    disposeFuncs =
-        (mergeWith..add(previousInChain)).map<VoidCallback>((notifier) {
+    disposeFuncs = mergeWith.map<VoidCallback>((notifier) {
       final notifyHandler = () => value = notifier.value;
       notifier.addListener(notifyHandler);
       return () => notifier.removeListener(notifyHandler);
     }).toList();
+    previousInChain
+        .addListener(internalHandler = () => value = previousInChain.value);
   }
 
   @override
   void removeListener(VoidCallback listener) {
+    super.removeListener(listener);
     if (!hasListeners) {
       disposeFuncs.forEach(_callSelf);
     }
-    super.removeListener(listener);
   }
 
   void _callSelf(VoidCallback handler) => handler.call();
