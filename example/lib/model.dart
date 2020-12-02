@@ -5,8 +5,8 @@ class Model {
   final _counter = ValueNotifier<int>(0);
   final _textInput = ValueNotifier<String>('');
 
-  ValueNotifier<String> _counterEvenValuesAsString;
-  ValueNotifier<String> _debouncedUpperCaseText;
+  late ValueNotifier<String> _counterEvenValuesAsString;
+  late ValueNotifier<String> _debouncedUpperCaseText;
 
   /// We only make the `ValueListenable` interface public
   /// so that noone outside the Model class can modify the values
@@ -17,9 +17,10 @@ class Model {
   Model() {
     _debouncedUpperCaseText = _textInput
         .debounce(const Duration(milliseconds: 500))
-        .map((s) => s.toUpperCase());
-    _counterEvenValuesAsString =
-        _counter.where((x) => x.isEven).map<String>((x) => x.toString());
+        .map((s) => s.toUpperCase()) as ValueNotifier<String>;
+    _counterEvenValuesAsString = _counter
+        .where((x) => x.isEven)
+        .map<String>((x) => x.toString()) as ValueNotifier<String>;
   }
 
   void incrementCounter() {
