@@ -61,7 +61,7 @@ class WhereValueNotifier<T> extends FunctionalValueNotifier<T, T> {
 }
 
 class DebouncedValueNotifier<T> extends FunctionalValueNotifier<T, T> {
-  Timer? debounceTimer;
+  late Timer debounceTimer;
   Duration debounceDuration;
 
   DebouncedValueNotifier(
@@ -70,7 +70,7 @@ class DebouncedValueNotifier<T> extends FunctionalValueNotifier<T, T> {
     this.debounceDuration,
   ) : super(initialValue, previousInChain) {
     internalHandler = () {
-      debounceTimer?.cancel();
+      debounceTimer.cancel();
       debounceTimer =
           Timer(debounceDuration, () => value = previousInChain.value);
     };
@@ -124,8 +124,6 @@ class MergingValueNotifiers<T> extends FunctionalValueNotifier<T, T> {
     this.mergeWith,
     T initialValue,
   ) : super(initialValue, previousInChain) {
-    internalHandler =
-        () {}; //we don't use it in that case but it's declared `late` we have to initialize it.
     disposeFuncs =
         (mergeWith..add(previousInChain)).map<VoidCallback>((notifier) {
       final notifyHandler = () => value = notifier.value;
