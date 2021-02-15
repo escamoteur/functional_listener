@@ -237,7 +237,7 @@ enum CustomNotifierMode { normal, manual, always }
 /// [value] property. You have to call it manually to notifiy the Listeners.
 class CustomValueNotifier<T> extends ChangeNotifier implements ValueListenable<T> {
   T _value;
-  final mode;
+  final CustomNotifierMode mode;
   @override
   T get value => _value;
 
