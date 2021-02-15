@@ -64,8 +64,7 @@ void main() {
     final listenable = ValueNotifier<int>(0);
 
     final destValues = <int>[];
-    final subscription =
-        listenable.where((x) => x.isEven).listen((x, _) => destValues.add(x));
+    final subscription = listenable.where((x) => x.isEven).listen((x, _) => destValues.add(x));
 
     listenable.value = 42;
     listenable.value = 43;
@@ -85,9 +84,7 @@ void main() {
     final listenable = ValueNotifier<int>(0);
 
     final destValues = <int>[];
-    listenable
-        .debounce(const Duration(milliseconds: 500))
-        .listen((x, _) => destValues.add(x));
+    listenable.debounce(const Duration(milliseconds: 500)).listen((x, _) => destValues.add(x));
 
     listenable.value = 42;
     await Future.delayed(const Duration(milliseconds: 100));
@@ -108,8 +105,7 @@ void main() {
 
     final destValues = <StringIntWrapper>[];
     final subscription = listenable1
-        .combineLatest<String, StringIntWrapper>(
-            listenable2, (i, s) => StringIntWrapper(s, i))
+        .combineLatest<String, StringIntWrapper>(listenable2, (i, s) => StringIntWrapper(s, i))
         .listen((x, _) {
       destValues.add(x);
     });
@@ -138,8 +134,7 @@ void main() {
     final listenable4 = ValueNotifier<int>(0);
 
     final destValues = <int>[];
-    final subscription = listenable1
-        .mergeWith([listenable2, listenable3, listenable4]).listen((x, _) {
+    final subscription = listenable1.mergeWith([listenable2, listenable3, listenable4]).listen((x, _) {
       destValues.add(x);
     });
 
@@ -160,6 +155,67 @@ void main() {
     listenable1.value = 47;
 
     expect(destValues.length, 5);
+  });
+
+  test('CustomValueNotifier normal behaviour', () {
+    final notifier = CustomValueNotifier<int>(4711);
+    int val = 0;
+    int callCount = 0;
+
+    notifier.addListener(() {
+      val = notifier.value;
+      callCount++;
+    });
+
+    expect(notifier.value, 4711);
+    notifier.value = 4711;
+    expect(notifier.value, 4711);
+    expect(val, 0);
+    notifier.value = 42;
+    expect(notifier.value, 42);
+    expect(val, 42);
+    expect(callCount, 1);
+  });
+  test('CustomValueNotifier a manual notify', () {
+    final notifier = CustomValueNotifier<int>(4711, mode: CustomNotifierMode.manual);
+    int val = 0;
+    int callCount = 0;
+
+    notifier.addListener(() {
+      val = notifier.value;
+      callCount++;
+    });
+
+    expect(notifier.value, 4711);
+    notifier.value = 4711;
+    expect(notifier.value, 4711);
+    expect(val, 0);
+    notifier.value = 42;
+    expect(notifier.value, 42);
+    expect(val, 0);
+    expect(callCount, 0);
+    notifier.notifyListeners();
+    expect(val, 42);
+    expect(callCount, 1);
+  });
+  test('CustomValueNotifier  always notify', () {
+    final notifier = CustomValueNotifier<int>(4711, mode: CustomNotifierMode.always);
+    int val = 0;
+    int callCount = 0;
+
+    notifier.addListener(() {
+      val = notifier.value;
+      callCount++;
+    });
+
+    expect(notifier.value, 4711);
+    notifier.value = 4711;
+    expect(notifier.value, 4711);
+    expect(val, 4711);
+    notifier.value = 42;
+    expect(notifier.value, 42);
+    expect(val, 42);
+    expect(callCount, 2);
   });
 }
 

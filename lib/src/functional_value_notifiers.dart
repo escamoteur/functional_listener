@@ -71,8 +71,7 @@ class DebouncedValueNotifier<T> extends FunctionalValueNotifier<T, T> {
   ) : super(initialValue, previousInChain) {
     internalHandler = () {
       debounceTimer?.cancel();
-      debounceTimer =
-          Timer(debounceDuration, () => value = previousInChain.value);
+      debounceTimer = Timer(debounceDuration, () => value = previousInChain.value);
     };
     previousInChain.addListener(internalHandler);
   }
@@ -92,8 +91,7 @@ class CombiningValueNotifier<TIn1, TIn2, TOut> extends ValueNotifier<TOut> {
     this.previousInChain2,
     this.combiner,
   ) : super(initialValue) {
-    internalHandler =
-        () => value = combiner(previousInChain1.value, previousInChain2.value);
+    internalHandler = () => value = combiner(previousInChain1.value, previousInChain2.value);
     previousInChain1.addListener(internalHandler);
     previousInChain2.addListener(internalHandler);
   }
@@ -129,8 +127,7 @@ class MergingValueNotifiers<T> extends FunctionalValueNotifier<T, T> {
       notifier.addListener(notifyHandler);
       return () => notifier.removeListener(notifyHandler);
     }).toList();
-    previousInChain
-        .addListener(internalHandler = () => value = previousInChain.value);
+    previousInChain.addListener(internalHandler = () => value = previousInChain.value);
   }
 
   @override

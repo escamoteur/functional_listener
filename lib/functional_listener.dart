@@ -34,8 +34,7 @@ extension FunctionaListener<T> on ValueListenable<T> {
   ///   }
   /// }
   ///
-  ListenableSubscription listen(
-      void Function(T, ListenableSubscription) handler) {
+  ListenableSubscription listen(void Function(T, ListenableSubscription) handler) {
     final subscription = ListenableSubscription(this);
     subscription.handler = () => handler(this.value, subscription);
     this.addListener(subscription.handler);
@@ -170,8 +169,7 @@ extension FunctionaListener<T> on ValueListenable<T> {
   ///  ```
   ///
   ValueListenable<TOut> combineLatest<TIn2, TOut>(
-      ValueListenable<TIn2> combineWith,
-      CombiningFunction2<T, TIn2, TOut> combiner) {
+      ValueListenable<TIn2> combineWith, CombiningFunction2<T, TIn2, TOut> combiner) {
     return CombiningValueNotifier<T, TIn2, TOut>(
       combiner(this.value, combineWith.value),
       this,
@@ -224,4 +222,38 @@ class ListenableSubscription {
       canceled = true;
     }
   }
+}
+
+enum CustomNotifierMode { normal, manual, always }
+
+/// Sometimes you want a Valuenotifier where you can control when its
+/// listeners are notified. With the `CustomValueNotifier` you can do this:
+/// If you pass [CustomNotifierMode.always] for the [mode] parameter,
+/// `notifierListeners` will be called everytime you assign a value to the
+/// [value] property independent of if the value is different from the
+/// previous one.
+/// If you pass [CustomNotifierMode.manual] for the [mode] parameter,
+/// `notifierListeners` will not be called when you assign a value to the
+/// [value] property. You have to call it manually to notifiy the Listeners.
+class CustomValueNotifier<T> extends ChangeNotifier implements ValueListenable<T> {
+  T _value;
+  final mode;
+  @override
+  T get value => _value;
+
+  set value(T val) {
+    if (mode == CustomNotifierMode.manual) {
+      _value = val;
+      return;
+    }
+    if (val != _value || mode == CustomNotifierMode.always) {
+      _value = val;
+      notifyListeners();
+    }
+  }
+
+  CustomValueNotifier(
+    T initialValue, {
+    this.mode = CustomNotifierMode.normal,
+  }) : _value = initialValue;
 }

@@ -1,3 +1,6 @@
+## [2.0.0] - 15.02.2021
+
+* Added `CustomValueNotfier` 
 ## [1.1.1] - 30.11.2020
 
 * Fixes in documentation and tests 

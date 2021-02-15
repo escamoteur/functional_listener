@@ -128,6 +128,40 @@ listenable1.value = 46;
 Will print 42,43,44,45,46
 
 
-For details on the functions check the source documentation, the tests and the example. 
+For details on the functions check the source documentation, the tests and the example.
+
+## CustomValueNotifier
+
+```Dart
+/// If you pass [CustomNotifierMode.always] for the [mode] parameter,
+/// `notifierListeners` will be called everytime you assign a value to the
+/// [value] property independent of if the value is different from the
+/// previous one.
+/// If you pass [CustomNotifierMode.manual] for the [mode] parameter,
+/// `notifierListeners` will not be called when you assign a value to the
+/// [value] property. You have to call it manually to notifiy the Listeners.
+class CustomValueNotifier<T> extends ChangeNotifier implements ValueListenable<T> {
+  T _value;
+  final mode;
+  @override
+  T get value => _value;
+
+  set value(T val) {
+    if (mode == CustomNotifierMode.manual) {
+      _value = val;
+      return;
+    }
+    if (val != _value || mode == CustomNotifierMode.always) {
+      _value = val;
+      notifyListeners();
+    }
+  }
+
+  CustomValueNotifier(
+    T initialValue, {
+    this.mode = CustomNotifierMode.normal,
+  }) : _value = initialValue;
+}
+```
 
 If you miss a function, open an issue on GitHub or even better make an PR :-)
