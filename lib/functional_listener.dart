@@ -211,7 +211,7 @@ extension FunctionaListener<T> on ValueListenable<T> {
 /// handler that you passed to it.
 class ListenableSubscription {
   final ValueListenable endOfPipe;
-  VoidCallback handler;
+  late VoidCallback handler;
   bool canceled = false;
 
   ListenableSubscription(this.endOfPipe);
@@ -219,7 +219,6 @@ class ListenableSubscription {
   /// Removes the handler that you installed with [listen]
   /// It's save to call cancel on an already canceled subscription
   void cancel() {
-    assert(handler != null);
     if (!canceled) {
       endOfPipe.removeListener(handler);
       canceled = true;

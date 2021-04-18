@@ -7,7 +7,7 @@ void main() {
     final sourceListenable = ValueNotifier<int>(0);
     final destListenable = sourceListenable.map<String>((x) => x.toString());
 
-    String destValue;
+    late String destValue;
     // ignore: prefer_function_declarations_over_variables
     final handler = () => destValue = destListenable.value;
     destListenable.addListener(handler);
@@ -27,7 +27,7 @@ void main() {
   test('Listen Test', () {
     final listenable = ValueNotifier<int>(0);
 
-    int destValue;
+    late int destValue;
     final subscription = listenable.listen((x, _) => destValue = x);
 
     listenable.value = 42;
@@ -44,7 +44,7 @@ void main() {
   test('Listen Test with interal cancel', () {
     final listenable = ValueNotifier<int>(0);
 
-    int destValue;
+    late int destValue;
     listenable.listen((x, subscription) {
       if (x == 42) {
         subscription.cancel();

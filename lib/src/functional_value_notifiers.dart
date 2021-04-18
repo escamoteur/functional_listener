@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 ///
 abstract class FunctionalValueNotifier<TIn, TOut> extends ValueNotifier<TOut> {
   final ValueListenable<TIn> previousInChain;
-  VoidCallback internalHandler;
+  VoidCallback? internalHandler;
 
   FunctionalValueNotifier(
     TOut initialValue,
@@ -16,14 +16,16 @@ abstract class FunctionalValueNotifier<TIn, TOut> extends ValueNotifier<TOut> {
   @override
   void removeListener(VoidCallback listener) {
     super.removeListener(listener);
-    if (!hasListeners) {
-      previousInChain.removeListener(internalHandler);
+    if (!hasListeners && internalHandler != null) {
+      previousInChain.removeListener(internalHandler!);
     }
   }
 
   @override
   void dispose() {
-    previousInChain.removeListener(internalHandler);
+    if(internalHandler != null) {
+      previousInChain.removeListener(internalHandler!);
+    }
     super.dispose();
   }
 }
@@ -39,7 +41,7 @@ class MapValueNotifier<TIn, TOut> extends FunctionalValueNotifier<TIn, TOut> {
     internalHandler = () {
       value = transformation(previousInChain.value);
     };
-    previousInChain.addListener(internalHandler);
+    previousInChain.addListener(internalHandler!);
   }
 }
 
@@ -56,12 +58,12 @@ class WhereValueNotifier<T> extends FunctionalValueNotifier<T, T> {
         value = previousInChain.value;
       }
     };
-    previousInChain.addListener(internalHandler);
+    previousInChain.addListener(internalHandler!);
   }
 }
 
 class DebouncedValueNotifier<T> extends FunctionalValueNotifier<T, T> {
-  Timer debounceTimer;
+  Timer? debounceTimer;
   Duration debounceDuration;
 
   DebouncedValueNotifier(
@@ -74,7 +76,7 @@ class DebouncedValueNotifier<T> extends FunctionalValueNotifier<T, T> {
       debounceTimer =
           Timer(debounceDuration, () => value = previousInChain.value);
     };
-    previousInChain.addListener(internalHandler);
+    previousInChain.addListener(internalHandler!);
   }
 }
 
@@ -84,7 +86,7 @@ class CombiningValueNotifier<TIn1, TIn2, TOut> extends ValueNotifier<TOut> {
   final ValueListenable<TIn1> previousInChain1;
   final ValueListenable<TIn2> previousInChain2;
   final CombiningFunction2<TIn1, TIn2, TOut> combiner;
-  VoidCallback internalHandler;
+  late VoidCallback internalHandler;
 
   CombiningValueNotifier(
     TOut initialValue,
@@ -117,7 +119,7 @@ class CombiningValueNotifier<TIn1, TIn2, TOut> extends ValueNotifier<TOut> {
 
 class MergingValueNotifiers<T> extends FunctionalValueNotifier<T, T> {
   final List<ValueListenable<T>> mergeWith;
-  List<VoidCallback> disposeFuncs;
+  late List<VoidCallback> disposeFuncs;
 
   MergingValueNotifiers(
     ValueListenable<T> previousInChain,

@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
 final theModel = Model();
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -69,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   padding: const EdgeInsets.all(8.0),
                   child: ValueListenableBuilder(
                     valueListenable: theModel.debouncedUpperCaseText,
-                    builder: (context, s, _) => Text(s),
+                    builder: (context, s, _) => Text(s?.toString() ?? ''),
                   ),
                 ),
               ),
