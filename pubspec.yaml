@@ -1,6 +1,6 @@
 name: functional_listener
 description: An rx like extension methods on ValueListenable type, that lets you work with ValueNotifiers almost like with Streams
-version: 2.0.0
+version: 2.0.1
 author: Thomas Burkhart
 homepage: https://github.com/escamoteur/functional_listener
 

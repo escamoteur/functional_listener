@@ -1,3 +1,7 @@
+## [2.0.1] - 05.05.2021
+
+* Added public `notifyListeners` to `CustomValueNotfier` 
+
 ## [2.0.0] - 15.02.2021
 
 * Added `CustomValueNotfier` 

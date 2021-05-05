@@ -34,7 +34,8 @@ extension FunctionaListener<T> on ValueListenable<T> {
   ///   }
   /// }
   ///
-  ListenableSubscription listen(void Function(T, ListenableSubscription) handler) {
+  ListenableSubscription listen(
+      void Function(T, ListenableSubscription) handler) {
     final subscription = ListenableSubscription(this);
     subscription.handler = () => handler(this.value, subscription);
     this.addListener(subscription.handler);
@@ -169,7 +170,8 @@ extension FunctionaListener<T> on ValueListenable<T> {
   ///  ```
   ///
   ValueListenable<TOut> combineLatest<TIn2, TOut>(
-      ValueListenable<TIn2> combineWith, CombiningFunction2<T, TIn2, TOut> combiner) {
+      ValueListenable<TIn2> combineWith,
+      CombiningFunction2<T, TIn2, TOut> combiner) {
     return CombiningValueNotifier<T, TIn2, TOut>(
       combiner(this.value, combineWith.value),
       this,
@@ -235,7 +237,8 @@ enum CustomNotifierMode { normal, manual, always }
 /// If you pass [CustomNotifierMode.manual] for the [mode] parameter,
 /// `notifierListeners` will not be called when you assign a value to the
 /// [value] property. You have to call it manually to notifiy the Listeners.
-class CustomValueNotifier<T> extends ChangeNotifier implements ValueListenable<T> {
+class CustomValueNotifier<T> extends ChangeNotifier
+    implements ValueListenable<T> {
   T _value;
   final CustomNotifierMode mode;
   @override
@@ -250,6 +253,12 @@ class CustomValueNotifier<T> extends ChangeNotifier implements ValueListenable<T
       _value = val;
       notifyListeners();
     }
+  }
+
+  @override
+  // ignore: unnecessary_overrides
+  void notifyListeners() {
+    super.notifyListeners();
   }
 
   CustomValueNotifier(
