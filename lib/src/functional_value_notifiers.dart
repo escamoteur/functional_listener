@@ -113,6 +113,106 @@ class CombiningValueNotifier<TIn1, TIn2, TOut> extends ValueNotifier<TOut> {
   }
 }
 
+typedef CombiningFunction3<TIn1, TIn2, TIn3, TOut> = TOut Function(
+    TIn1, TIn2, TIn3);
+
+class CombiningValueNotifier3<TIn1, TIn2, TIn3, TOut>
+    extends ValueNotifier<TOut> {
+  final ValueListenable<TIn1> previousInChain1;
+  final ValueListenable<TIn2> previousInChain2;
+  final ValueListenable<TIn3> previousInChain3;
+  final CombiningFunction3<TIn1, TIn2, TIn3, TOut> combiner;
+  late VoidCallback internalHandler;
+
+  CombiningValueNotifier3(
+    TOut initialValue,
+    this.previousInChain1,
+    this.previousInChain2,
+    this.previousInChain3,
+    this.combiner,
+  ) : super(initialValue) {
+    internalHandler = () => value = combiner(
+          previousInChain1.value,
+          previousInChain2.value,
+          previousInChain3.value,
+        );
+    previousInChain1.addListener(internalHandler);
+    previousInChain2.addListener(internalHandler);
+    previousInChain3.addListener(internalHandler);
+  }
+
+  @override
+  void removeListener(VoidCallback listener) {
+    super.removeListener(listener);
+    if (!hasListeners) {
+      previousInChain1.removeListener(internalHandler);
+      previousInChain2.removeListener(internalHandler);
+      previousInChain3.removeListener(internalHandler);
+    }
+  }
+
+  @override
+  void dispose() {
+    previousInChain1.removeListener(internalHandler);
+    previousInChain2.removeListener(internalHandler);
+    previousInChain3.removeListener(internalHandler);
+    super.dispose();
+  }
+}
+
+typedef CombiningFunction4<TIn1, TIn2, TIn3, TIn4, TOut> = TOut Function(
+    TIn1, TIn2, TIn3, TIn4);
+
+class CombiningValueNotifier4<TIn1, TIn2, TIn3, TIn4, TOut>
+    extends ValueNotifier<TOut> {
+  final ValueListenable<TIn1> previousInChain1;
+  final ValueListenable<TIn2> previousInChain2;
+  final ValueListenable<TIn3> previousInChain3;
+  final ValueListenable<TIn4> previousInChain4;
+  final CombiningFunction4<TIn1, TIn2, TIn3, TIn4, TOut> combiner;
+  late VoidCallback internalHandler;
+
+  CombiningValueNotifier4(
+      TOut initialValue,
+      this.previousInChain1,
+      this.previousInChain2,
+      this.previousInChain3,
+      this.previousInChain4,
+      this.combiner,
+      ) : super(initialValue) {
+    internalHandler = () => value = combiner(
+      previousInChain1.value,
+      previousInChain2.value,
+      previousInChain3.value,
+      previousInChain4.value,
+    );
+    previousInChain1.addListener(internalHandler);
+    previousInChain2.addListener(internalHandler);
+    previousInChain3.addListener(internalHandler);
+    previousInChain4.addListener(internalHandler);
+  }
+
+  @override
+  void removeListener(VoidCallback listener) {
+    super.removeListener(listener);
+    if (!hasListeners) {
+      previousInChain1.removeListener(internalHandler);
+      previousInChain2.removeListener(internalHandler);
+      previousInChain3.removeListener(internalHandler);
+      previousInChain4.removeListener(internalHandler);
+    }
+  }
+
+  @override
+  void dispose() {
+    previousInChain1.removeListener(internalHandler);
+    previousInChain2.removeListener(internalHandler);
+    previousInChain3.removeListener(internalHandler);
+    previousInChain4.removeListener(internalHandler);
+    super.dispose();
+  }
+}
+
 class MergingValueNotifiers<T> extends FunctionalValueNotifier<T, T> {
   final List<ValueListenable<T>> mergeWith;
   late List<VoidCallback> disposeFuncs;

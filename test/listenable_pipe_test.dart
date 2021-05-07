@@ -127,6 +127,73 @@ void main() {
     expect(destValues.length, 4);
   });
 
+  test('combineLatest3 Test', () {
+    final listenable1 = ValueNotifier<String>('InitVal1');
+    final listenable2 = ValueNotifier<String>('InitVal2');
+    final listenable3 = ValueNotifier<String>('InitVal3');
+
+    final destValues = <String>[];
+    final subscription = listenable1
+        .combineLatest3<String, String, String>(
+            listenable2, listenable3, (i, j, s) => "$i:$j:$s")
+        .listen((x, _) {
+      destValues.add(x);
+    });
+
+    listenable1.value = '42';
+    listenable1.value = '43';
+    listenable2.value = 'First';
+    listenable3.value = 'NewVal3';
+    listenable1.value = '45';
+
+    expect(destValues[0].toString(), '42:InitVal2:InitVal3');
+    expect(destValues[1].toString(), '43:InitVal2:InitVal3');
+    expect(destValues[2].toString(), '43:First:InitVal3');
+    expect(destValues[3].toString(), '43:First:NewVal3');
+    expect(destValues[4].toString(), '45:First:NewVal3');
+
+    subscription.cancel();
+
+    listenable1.value = '46';
+
+    expect(destValues.length, 5);
+  });
+
+  test('combineLatest4 Test', () {
+    final listenable1 = ValueNotifier<String>('InitVal1');
+    final listenable2 = ValueNotifier<String>('InitVal2');
+    final listenable3 = ValueNotifier<String>('InitVal3');
+    final listenable4 = ValueNotifier<String>('InitVal4');
+
+    final destValues = <String>[];
+    final subscription = listenable1
+        .combineLatest4<String, String, String, String>(
+            listenable2, listenable3, listenable4, (i, j, k, s) => "$i:$j:$k:$s")
+        .listen((x, _) {
+      destValues.add(x);
+    });
+
+    listenable1.value = '42';
+    listenable1.value = '43';
+    listenable2.value = 'First';
+    listenable3.value = 'NewVal3';
+    listenable4.value = 'NewVal4';
+    listenable1.value = '45';
+
+    expect(destValues[0].toString(), '42:InitVal2:InitVal3:InitVal4');
+    expect(destValues[1].toString(), '43:InitVal2:InitVal3:InitVal4');
+    expect(destValues[2].toString(), '43:First:InitVal3:InitVal4');
+    expect(destValues[3].toString(), '43:First:NewVal3:InitVal4');
+    expect(destValues[4].toString(), '43:First:NewVal3:NewVal4');
+    expect(destValues[5].toString(), '45:First:NewVal3:NewVal4');
+
+    subscription.cancel();
+
+    listenable1.value = '46';
+
+    expect(destValues.length, 6);
+  });
+
   test('mergeWith Test', () {
     final listenable1 = ValueNotifier<int>(0);
     final listenable2 = ValueNotifier<int>(0);
