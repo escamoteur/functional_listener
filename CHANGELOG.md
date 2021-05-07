@@ -1,3 +1,7 @@
+## [2.0.2] - 07.05.2021
+
+* Bugfix: If you resubscribed to one of the Listenables that are returned from the extension functions in this package and then resubscribed it did not rebuild the subcription to it's previous in chain.
+
 ## [2.0.1] - 05.05.2021
 
 * Added public `notifyListeners` to `CustomValueNotfier` 

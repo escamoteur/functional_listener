@@ -64,7 +64,8 @@ void main() {
     final listenable = ValueNotifier<int>(0);
 
     final destValues = <int>[];
-    final subscription = listenable.where((x) => x.isEven).listen((x, _) => destValues.add(x));
+    final subscription =
+        listenable.where((x) => x.isEven).listen((x, _) => destValues.add(x));
 
     listenable.value = 42;
     listenable.value = 43;
@@ -84,7 +85,9 @@ void main() {
     final listenable = ValueNotifier<int>(0);
 
     final destValues = <int>[];
-    listenable.debounce(const Duration(milliseconds: 500)).listen((x, _) => destValues.add(x));
+    listenable
+        .debounce(const Duration(milliseconds: 500))
+        .listen((x, _) => destValues.add(x));
 
     listenable.value = 42;
     await Future.delayed(const Duration(milliseconds: 100));
@@ -105,7 +108,8 @@ void main() {
 
     final destValues = <StringIntWrapper>[];
     final subscription = listenable1
-        .combineLatest<String, StringIntWrapper>(listenable2, (i, s) => StringIntWrapper(s, i))
+        .combineLatest<String, StringIntWrapper>(
+            listenable2, (i, s) => StringIntWrapper(s, i))
         .listen((x, _) {
       destValues.add(x);
     });
@@ -134,7 +138,8 @@ void main() {
     final listenable4 = ValueNotifier<int>(0);
 
     final destValues = <int>[];
-    final subscription = listenable1.mergeWith([listenable2, listenable3, listenable4]).listen((x, _) {
+    final subscription = listenable1
+        .mergeWith([listenable2, listenable3, listenable4]).listen((x, _) {
       destValues.add(x);
     });
 
@@ -157,6 +162,46 @@ void main() {
     expect(destValues.length, 5);
   });
 
+  test('mergeWith unsubscribe/resubscribe Test', () {
+    final listenable1 = ValueNotifier<int>(0);
+    final listenable2 = ValueNotifier<int>(0);
+    final listenable3 = ValueNotifier<int>(0);
+
+    final destValues = <int>[];
+    final mergedListenable = listenable1.mergeWith([
+      listenable2,
+      listenable3,
+    ]);
+    var subscription = mergedListenable.listen((x, _) {
+      destValues.add(x);
+    });
+
+    listenable2.value = 42;
+    listenable1.value = 43;
+    listenable3.value = 45;
+    listenable1.value = 46;
+
+    expect(destValues[0], 42);
+    expect(destValues[1], 43);
+    expect(destValues[2], 45);
+    expect(destValues[3], 46);
+
+    subscription.cancel();
+
+    listenable1.value = 47;
+
+    expect(destValues.length, 4);
+
+    destValues.clear();
+    subscription = mergedListenable.listen((x, _) {
+      destValues.add(x);
+    });
+
+    listenable1.value = 42;
+
+    expect(destValues[0], 42);
+  });
+
   test('CustomValueNotifier normal behaviour', () {
     final notifier = CustomValueNotifier<int>(4711);
     int val = 0;
@@ -177,7 +222,8 @@ void main() {
     expect(callCount, 1);
   });
   test('CustomValueNotifier a manual notify', () {
-    final notifier = CustomValueNotifier<int>(4711, mode: CustomNotifierMode.manual);
+    final notifier =
+        CustomValueNotifier<int>(4711, mode: CustomNotifierMode.manual);
     int val = 0;
     int callCount = 0;
 
@@ -199,7 +245,8 @@ void main() {
     expect(callCount, 1);
   });
   test('CustomValueNotifier  always notify', () {
-    final notifier = CustomValueNotifier<int>(4711, mode: CustomNotifierMode.always);
+    final notifier =
+        CustomValueNotifier<int>(4711, mode: CustomNotifierMode.always);
     int val = 0;
     int callCount = 0;
 
