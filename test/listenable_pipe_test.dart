@@ -107,7 +107,7 @@ void main() {
     final listenable2 = ValueNotifier<String>('Start');
 
     final destValues = <StringIntWrapper>[];
-    final subscription = listenable1
+    var subscription = listenable1
         .combineLatest<String, StringIntWrapper>(
             listenable2, (i, s) => StringIntWrapper(s, i))
         .listen((x, _) {
@@ -129,6 +129,17 @@ void main() {
     listenable1.value = 46;
 
     expect(destValues.length, 4);
+
+    destValues.clear();
+    subscription = listenable1
+        .combineLatest<String, StringIntWrapper>(
+            listenable2, (i, s) => StringIntWrapper(s, i))
+        .listen((x, _) {
+      destValues.add(x);
+    });
+    listenable1.value = 47;
+    expect(destValues[0].toString(), 'First:47');
+    expect(destValues.length, 1);
   });
 
   test('combineLatest3 Test', () {
@@ -137,7 +148,7 @@ void main() {
     final listenable3 = ValueNotifier<String>('InitVal3');
 
     final destValues = <String>[];
-    final subscription = listenable1
+    var subscription = listenable1
         .combineLatest3<String, String, String>(
             listenable2, listenable3, (i, j, s) => "$i:$j:$s")
         .listen((x, _) {
@@ -161,6 +172,17 @@ void main() {
     listenable1.value = '46';
 
     expect(destValues.length, 5);
+
+    destValues.clear();
+    subscription = listenable1
+        .combineLatest3<String, String, String>(
+            listenable2, listenable3, (i, j, s) => "$i:$j:$s")
+        .listen((x, _) {
+      destValues.add(x);
+    });
+    listenable1.value = "47";
+    expect(destValues[0].toString(), '47:First:NewVal3');
+    expect(destValues.length, 1);
   });
 
   test('combineLatest4 Test', () {

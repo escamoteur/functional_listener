@@ -120,10 +120,25 @@ class CombiningValueNotifier<TIn1, TIn2, TOut> extends ValueNotifier<TOut> {
     this.previousInChain2,
     this.combiner,
   ) : super(initialValue) {
+    init(previousInChain1, previousInChain2);
+  }
+
+  void init(ValueListenable<TIn1> previousInChain1,
+      ValueListenable<TIn2> previousInChain2) {
     internalHandler =
         () => value = combiner(previousInChain1.value, previousInChain2.value);
     previousInChain1.addListener(internalHandler);
     previousInChain2.addListener(internalHandler);
+  }
+
+  @override
+  void addListener(VoidCallback listener) {
+    /// if we already have a listener that means the subscription chain is already
+    /// set up so we don't have to do it again.
+    if (!hasListeners) {
+      init(previousInChain1, previousInChain2);
+    }
+    super.addListener(listener);
   }
 
   @override
@@ -161,6 +176,14 @@ class CombiningValueNotifier3<TIn1, TIn2, TIn3, TOut>
     this.previousInChain3,
     this.combiner,
   ) : super(initialValue) {
+    init(previousInChain1, previousInChain2, previousInChain3);
+  }
+
+  void init(
+    ValueListenable<TIn1> previousInChain1,
+    ValueListenable<TIn2> previousInChain2,
+    ValueListenable<TIn3> previousInChain3,
+  ) {
     internalHandler = () => value = combiner(
           previousInChain1.value,
           previousInChain2.value,
@@ -169,6 +192,16 @@ class CombiningValueNotifier3<TIn1, TIn2, TIn3, TOut>
     previousInChain1.addListener(internalHandler);
     previousInChain2.addListener(internalHandler);
     previousInChain3.addListener(internalHandler);
+  }
+
+  @override
+  void addListener(VoidCallback listener) {
+    /// if we already have a listener that means the subscription chain is already
+    /// set up so we don't have to do it again.
+    if (!hasListeners) {
+      // init(previousInChain1, previousInChain2, previousInChain3);
+    }
+    super.addListener(listener);
   }
 
   @override
@@ -210,6 +243,20 @@ class CombiningValueNotifier4<TIn1, TIn2, TIn3, TIn4, TOut>
     this.previousInChain4,
     this.combiner,
   ) : super(initialValue) {
+    init(
+      previousInChain1,
+      previousInChain2,
+      previousInChain3,
+      previousInChain4,
+    );
+  }
+
+  void init(
+    ValueListenable<TIn1> previousInChain1,
+    ValueListenable<TIn2> previousInChain2,
+    ValueListenable<TIn3> previousInChain3,
+    ValueListenable<TIn4> previousInChain4,
+  ) {
     internalHandler = () => value = combiner(
           previousInChain1.value,
           previousInChain2.value,
@@ -220,6 +267,17 @@ class CombiningValueNotifier4<TIn1, TIn2, TIn3, TIn4, TOut>
     previousInChain2.addListener(internalHandler);
     previousInChain3.addListener(internalHandler);
     previousInChain4.addListener(internalHandler);
+  }
+
+  @override
+  void addListener(VoidCallback listener) {
+    /// if we already have a listener that means the subscription chain is already
+    /// set up so we don't have to do it again.
+    if (!hasListeners) {
+      init(previousInChain1, previousInChain2, previousInChain3,
+          previousInChain4);
+    }
+    super.addListener(listener);
   }
 
   @override
@@ -265,6 +323,17 @@ class CombiningValueNotifier5<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>
     this.previousInChain5,
     this.combiner,
   ) : super(initialValue) {
+    init(previousInChain1, previousInChain2, previousInChain3, previousInChain4,
+        previousInChain5);
+  }
+
+  void init(
+    ValueListenable<TIn1> previousInChain1,
+    ValueListenable<TIn2> previousInChain2,
+    ValueListenable<TIn3> previousInChain3,
+    ValueListenable<TIn4> previousInChain4,
+    ValueListenable<TIn5> previousInChain5,
+  ) {
     internalHandler = () => value = combiner(
           previousInChain1.value,
           previousInChain2.value,
@@ -277,6 +346,17 @@ class CombiningValueNotifier5<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>
     previousInChain3.addListener(internalHandler);
     previousInChain4.addListener(internalHandler);
     previousInChain5.addListener(internalHandler);
+  }
+
+  @override
+  void addListener(VoidCallback listener) {
+    /// if we already have a listener that means the subscription chain is already
+    /// set up so we don't have to do it again.
+    if (!hasListeners) {
+      init(previousInChain1, previousInChain2, previousInChain3,
+          previousInChain4, previousInChain5);
+    }
+    super.addListener(listener);
   }
 
   @override
@@ -326,6 +406,18 @@ class CombiningValueNotifier6<TIn1, TIn2, TIn3, TIn4, TIn5, TIn6, TOut>
     this.previousInChain6,
     this.combiner,
   ) : super(initialValue) {
+    init(previousInChain1, previousInChain2, previousInChain3, previousInChain4,
+        previousInChain5, previousInChain6);
+  }
+
+  void init(
+    ValueListenable<TIn1> previousInChain1,
+    ValueListenable<TIn2> previousInChain2,
+    ValueListenable<TIn3> previousInChain3,
+    ValueListenable<TIn4> previousInChain4,
+    ValueListenable<TIn5> previousInChain5,
+    ValueListenable<TIn6> previousInChain6,
+  ) {
     internalHandler = () => value = combiner(
           previousInChain1.value,
           previousInChain2.value,
@@ -340,6 +432,17 @@ class CombiningValueNotifier6<TIn1, TIn2, TIn3, TIn4, TIn5, TIn6, TOut>
     previousInChain4.addListener(internalHandler);
     previousInChain5.addListener(internalHandler);
     previousInChain6.addListener(internalHandler);
+  }
+
+  @override
+  void addListener(VoidCallback listener) {
+    /// if we already have a listener that means the subscription chain is already
+    /// set up so we don't have to do it again.
+    if (!hasListeners) {
+      init(previousInChain1, previousInChain2, previousInChain3,
+          previousInChain4, previousInChain5, previousInChain6);
+    }
+    super.addListener(listener);
   }
 
   @override
