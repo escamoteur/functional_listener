@@ -8,6 +8,9 @@ abstract class FunctionalValueNotifier<TIn, TOut> extends ValueNotifier<TOut> {
   final ValueListenable<TIn> previousInChain;
   late VoidCallback internalHandler;
 
+  @protected
+  bool chainInitialized = false;
+
   FunctionalValueNotifier(
     TOut initialValue,
     this.previousInChain,
@@ -15,11 +18,15 @@ abstract class FunctionalValueNotifier<TIn, TOut> extends ValueNotifier<TOut> {
 
   void init(ValueListenable<TIn> previousInChain);
 
+  @protected
+  void setupChain() {
+    previousInChain.addListener(internalHandler);
+    chainInitialized = true;
+  }
+
   @override
   void addListener(VoidCallback listener) {
-    /// if we already have a listener that means the subscription chain is already
-    /// set up so we don't have to do it again.
-    if (!hasListeners) {
+    if (!chainInitialized) {
       init(previousInChain);
     }
     super.addListener(listener);
@@ -30,6 +37,7 @@ abstract class FunctionalValueNotifier<TIn, TOut> extends ValueNotifier<TOut> {
     super.removeListener(listener);
     if (!hasListeners) {
       previousInChain.removeListener(internalHandler);
+      chainInitialized = false;
     }
   }
 
@@ -53,11 +61,10 @@ class MapValueNotifier<TIn, TOut> extends FunctionalValueNotifier<TIn, TOut> {
 
   @override
   void init(ValueListenable<TIn> previousInChain) {
-    // TODO: implement init
     internalHandler = () {
       value = transformation(previousInChain.value);
     };
-    previousInChain.addListener(internalHandler);
+    setupChain();
   }
 }
 
@@ -79,7 +86,7 @@ class WhereValueNotifier<T> extends FunctionalValueNotifier<T, T> {
         value = previousInChain.value;
       }
     };
-    previousInChain.addListener(internalHandler);
+    setupChain();
   }
 }
 
@@ -102,7 +109,7 @@ class DebouncedValueNotifier<T> extends FunctionalValueNotifier<T, T> {
       debounceTimer =
           Timer(debounceDuration, () => value = previousInChain.value);
     };
-    previousInChain.addListener(internalHandler);
+    setupChain();
   }
 }
 
@@ -162,8 +169,8 @@ class MergingValueNotifiers<T> extends FunctionalValueNotifier<T, T> {
       notifier.addListener(notifyHandler);
       return () => notifier.removeListener(notifyHandler);
     }).toList();
-    previousInChain
-        .addListener(internalHandler = () => value = previousInChain.value);
+    internalHandler = () => value = previousInChain.value;
+    setupChain();
   }
 
   @override
