@@ -24,6 +24,33 @@ void main() {
     expect(destValue, '42');
   });
 
+  test('Select Test', () {
+    final sourceListenable = ValueNotifier<StringIntWrapper>(StringIntWrapper("fiz", 0));
+    final stringDestListenable = sourceListenable.select<String>((x) => x.s);
+
+    String? stringDestValue;
+    // ignore: prefer_function_declarations_over_variables
+    final stringHandler = () => stringDestValue = stringDestListenable.value;
+
+    stringDestListenable.addListener(stringHandler);
+
+    sourceListenable.value = StringIntWrapper("fiz", 1);
+
+    expect(stringDestListenable.value, 'fiz');
+    expect(stringDestValue, null);
+
+    sourceListenable.value = StringIntWrapper("buzz", 1);
+
+    expect(stringDestListenable.value, 'buzz');
+    expect(stringDestValue, 'buzz');
+
+    stringDestListenable.removeListener(stringHandler);
+
+    sourceListenable.value = StringIntWrapper("fiz-buzz", 2);
+
+    expect(stringDestValue, 'buzz');
+  });
+
   test('Listen Test', () {
     final listenable = ValueNotifier<int>(0);
 

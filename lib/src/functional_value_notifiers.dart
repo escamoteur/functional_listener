@@ -40,8 +40,31 @@ abstract class FunctionalValueNotifier<TIn, TOut> extends ValueNotifier<TOut> {
   }
 }
 
+class SelectValueNotifier<TIn, TOut> extends FunctionalValueNotifier<TIn, TOut> {
+  final TOut Function(TIn) selector;
+
+  SelectValueNotifier(
+    TOut initialValue,
+    ValueListenable<TIn> previousInChain,
+    this.selector,
+  ) : super(initialValue, previousInChain) {
+    init(previousInChain);
+  }
+
+  @override
+  void init(ValueListenable<TIn> previousInChain) {
+    internalHandler = () {
+      final selected = selector(previousInChain.value);
+      if (selected != value) {
+        value = selected;
+      }
+    };
+    previousInChain.addListener(internalHandler);
+  }
+}
+
 class MapValueNotifier<TIn, TOut> extends FunctionalValueNotifier<TIn, TOut> {
-  TOut Function(TIn) transformation;
+  final TOut Function(TIn) transformation;
 
   MapValueNotifier(
     TOut initialValue,
@@ -62,7 +85,7 @@ class MapValueNotifier<TIn, TOut> extends FunctionalValueNotifier<TIn, TOut> {
 }
 
 class WhereValueNotifier<T> extends FunctionalValueNotifier<T, T> {
-  bool Function(T) selector;
+  final bool Function(T) selector;
 
   WhereValueNotifier(
     T initialValue,
@@ -85,7 +108,7 @@ class WhereValueNotifier<T> extends FunctionalValueNotifier<T, T> {
 
 class DebouncedValueNotifier<T> extends FunctionalValueNotifier<T, T> {
   Timer? debounceTimer;
-  Duration debounceDuration;
+  final Duration debounceDuration;
 
   DebouncedValueNotifier(
     T initialValue,
@@ -99,7 +122,7 @@ class DebouncedValueNotifier<T> extends FunctionalValueNotifier<T, T> {
   void init(ValueListenable<T> previousInChain) {
     internalHandler = () {
       debounceTimer?.cancel();
-      debounceTimer =
+      debounceTimer = //
           Timer(debounceDuration, () => value = previousInChain.value);
     };
     previousInChain.addListener(internalHandler);
@@ -120,7 +143,7 @@ class CombiningValueNotifier<TIn1, TIn2, TOut> extends ValueNotifier<TOut> {
     this.previousInChain2,
     this.combiner,
   ) : super(initialValue) {
-    internalHandler =
+    internalHandler = //
         () => value = combiner(previousInChain1.value, previousInChain2.value);
     previousInChain1.addListener(internalHandler);
     previousInChain2.addListener(internalHandler);
@@ -162,7 +185,7 @@ class MergingValueNotifiers<T> extends FunctionalValueNotifier<T, T> {
       notifier.addListener(notifyHandler);
       return () => notifier.removeListener(notifyHandler);
     }).toList();
-    previousInChain
+    previousInChain //
         .addListener(internalHandler = () => value = previousInChain.value);
   }
 
