@@ -24,6 +24,33 @@ void main() {
     expect(destValue, '42');
   });
 
+  test('Select Test', () {
+    final sourceListenable = ValueNotifier<StringIntWrapper>(StringIntWrapper("fiz", 0));
+    final stringDestListenable = sourceListenable.select<String>((x) => x.s);
+
+    String? stringDestValue;
+    // ignore: prefer_function_declarations_over_variables
+    final stringHandler = () => stringDestValue = stringDestListenable.value;
+
+    stringDestListenable.addListener(stringHandler);
+
+    sourceListenable.value = StringIntWrapper("fiz", 1);
+
+    expect(stringDestListenable.value, 'fiz');
+    expect(stringDestValue, null);
+
+    sourceListenable.value = StringIntWrapper("buzz", 1);
+
+    expect(stringDestListenable.value, 'buzz');
+    expect(stringDestValue, 'buzz');
+
+    stringDestListenable.removeListener(stringHandler);
+
+    sourceListenable.value = StringIntWrapper("fiz-buzz", 2);
+
+    expect(stringDestValue, 'buzz');
+  });
+
   test('Listen Test', () {
     final listenable = ValueNotifier<int>(0);
 
@@ -440,6 +467,32 @@ void main() {
     expect(notifier.value, 42);
     expect(val, 42);
     expect(callCount, 2);
+  });
+
+  test('no double chain subscriptions', () {
+    final notifier = CustomValueNotifier<int>(0, mode: CustomNotifierMode.always);
+    int callCount = 0;
+    notifier.listen((v, _) {
+      callCount++;
+    });
+
+    int chainCallCount = 0;
+    final mapNotifier = notifier.map((v) {
+      chainCallCount++;
+      return v + 1;
+    });
+
+    int mapCallCount = 0;
+    mapNotifier.listen((v, _) {
+      mapCallCount++;
+    });
+
+    notifier.value = 1;
+
+    expect(callCount, 1);
+    expect(mapNotifier.value, 2);
+    expect(mapCallCount, 1);
+    expect(chainCallCount, 2); // 1 on init, 1 after notifier.value = 1;
   });
 }
 

@@ -8,6 +8,9 @@ abstract class FunctionalValueNotifier<TIn, TOut> extends ValueNotifier<TOut> {
   final ValueListenable<TIn> previousInChain;
   late VoidCallback internalHandler;
 
+  @protected
+  bool chainInitialized = false;
+
   FunctionalValueNotifier(
     TOut initialValue,
     this.previousInChain,
@@ -15,11 +18,15 @@ abstract class FunctionalValueNotifier<TIn, TOut> extends ValueNotifier<TOut> {
 
   void init(ValueListenable<TIn> previousInChain);
 
+  @protected
+  void setupChain() {
+    previousInChain.addListener(internalHandler);
+    chainInitialized = true;
+  }
+
   @override
   void addListener(VoidCallback listener) {
-    /// if we already have a listener that means the subscription chain is already
-    /// set up so we don't have to do it again.
-    if (!hasListeners) {
+    if (!chainInitialized) {
       init(previousInChain);
     }
     super.addListener(listener);
@@ -30,6 +37,7 @@ abstract class FunctionalValueNotifier<TIn, TOut> extends ValueNotifier<TOut> {
     super.removeListener(listener);
     if (!hasListeners) {
       previousInChain.removeListener(internalHandler);
+      chainInitialized = false;
     }
   }
 
@@ -40,8 +48,31 @@ abstract class FunctionalValueNotifier<TIn, TOut> extends ValueNotifier<TOut> {
   }
 }
 
+class SelectValueNotifier<TIn, TOut> extends FunctionalValueNotifier<TIn, TOut> {
+  final TOut Function(TIn) selector;
+
+  SelectValueNotifier(
+    TOut initialValue,
+    ValueListenable<TIn> previousInChain,
+    this.selector,
+  ) : super(initialValue, previousInChain) {
+    init(previousInChain);
+  }
+
+  @override
+  void init(ValueListenable<TIn> previousInChain) {
+    internalHandler = () {
+      final selected = selector(previousInChain.value);
+      if (selected != value) {
+        value = selected;
+      }
+    };
+    previousInChain.addListener(internalHandler);
+  }
+}
+
 class MapValueNotifier<TIn, TOut> extends FunctionalValueNotifier<TIn, TOut> {
-  TOut Function(TIn) transformation;
+  final TOut Function(TIn) transformation;
 
   MapValueNotifier(
     TOut initialValue,
@@ -53,16 +84,15 @@ class MapValueNotifier<TIn, TOut> extends FunctionalValueNotifier<TIn, TOut> {
 
   @override
   void init(ValueListenable<TIn> previousInChain) {
-    // TODO: implement init
     internalHandler = () {
       value = transformation(previousInChain.value);
     };
-    previousInChain.addListener(internalHandler);
+    setupChain();
   }
 }
 
 class WhereValueNotifier<T> extends FunctionalValueNotifier<T, T> {
-  bool Function(T) selector;
+  final bool Function(T) selector;
 
   WhereValueNotifier(
     T initialValue,
@@ -79,13 +109,13 @@ class WhereValueNotifier<T> extends FunctionalValueNotifier<T, T> {
         value = previousInChain.value;
       }
     };
-    previousInChain.addListener(internalHandler);
+    setupChain();
   }
 }
 
 class DebouncedValueNotifier<T> extends FunctionalValueNotifier<T, T> {
   Timer? debounceTimer;
-  Duration debounceDuration;
+  final Duration debounceDuration;
 
   DebouncedValueNotifier(
     T initialValue,
@@ -99,10 +129,10 @@ class DebouncedValueNotifier<T> extends FunctionalValueNotifier<T, T> {
   void init(ValueListenable<T> previousInChain) {
     internalHandler = () {
       debounceTimer?.cancel();
-      debounceTimer =
+      debounceTimer = //
           Timer(debounceDuration, () => value = previousInChain.value);
     };
-    previousInChain.addListener(internalHandler);
+    setupChain();
   }
 }
 
@@ -120,12 +150,7 @@ class CombiningValueNotifier<TIn1, TIn2, TOut> extends ValueNotifier<TOut> {
     this.previousInChain2,
     this.combiner,
   ) : super(initialValue) {
-    init(previousInChain1, previousInChain2);
-  }
 
-  void init(ValueListenable<TIn1> previousInChain1,
-      ValueListenable<TIn2> previousInChain2) {
-    internalHandler =
         () => value = combiner(previousInChain1.value, previousInChain2.value);
     previousInChain1.addListener(internalHandler);
     previousInChain2.addListener(internalHandler);
@@ -489,8 +514,9 @@ class MergingValueNotifiers<T> extends FunctionalValueNotifier<T, T> {
       notifier.addListener(notifyHandler);
       return () => notifier.removeListener(notifyHandler);
     }).toList();
-    previousInChain
-        .addListener(internalHandler = () => value = previousInChain.value);
+
+    internalHandler = () => value = previousInChain.value;
+    setupChain();
   }
 
   @override
