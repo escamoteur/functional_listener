@@ -1,3 +1,8 @@
+## [2.1.0] - 29.01.2022
+
+* merged several PRs with bugfixes
+* adds the `select()` method see the readme
+* adds more `combineLates()` variants up to 6 input Listenables
 ## [2.0.2] - 07.05.2021
 
 * Bugfix: If you resubscribed to one of the Listenables that are returned from the extension functions in this package and then resubscribed it did not rebuild the subcription to it's previous in chain.

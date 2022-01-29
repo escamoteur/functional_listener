@@ -144,6 +144,7 @@ class CombiningValueNotifier<TIn1, TIn2, TOut> extends ValueNotifier<TOut> {
   final ValueListenable<TIn2> previousInChain2;
   final CombiningFunction2<TIn1, TIn2, TOut> combiner;
   late VoidCallback internalHandler;
+  bool chainInitialized = false;
 
   CombiningValueNotifier(
     TOut initialValue,
@@ -151,17 +152,25 @@ class CombiningValueNotifier<TIn1, TIn2, TOut> extends ValueNotifier<TOut> {
     this.previousInChain2,
     this.combiner,
   ) : super(initialValue) {
+    internalHandler =
+        () => value = combiner(previousInChain1.value, previousInChain2.value);
+    init(previousInChain1, previousInChain2);
+  }
 
+  void init(ValueListenable<TIn1> previousInChain1,
+      ValueListenable<TIn2> previousInChain2) {
+    internalHandler =
         () => value = combiner(previousInChain1.value, previousInChain2.value);
     previousInChain1.addListener(internalHandler);
     previousInChain2.addListener(internalHandler);
+    chainInitialized = true;
   }
 
   @override
   void addListener(VoidCallback listener) {
     /// if we already have a listener that means the subscription chain is already
     /// set up so we don't have to do it again.
-    if (!hasListeners) {
+    if (!chainInitialized) {
       init(previousInChain1, previousInChain2);
     }
     super.addListener(listener);
@@ -173,6 +182,7 @@ class CombiningValueNotifier<TIn1, TIn2, TOut> extends ValueNotifier<TOut> {
     if (!hasListeners) {
       previousInChain1.removeListener(internalHandler);
       previousInChain2.removeListener(internalHandler);
+      chainInitialized = false;
     }
   }
 
@@ -194,6 +204,7 @@ class CombiningValueNotifier3<TIn1, TIn2, TIn3, TOut>
   final ValueListenable<TIn3> previousInChain3;
   final CombiningFunction3<TIn1, TIn2, TIn3, TOut> combiner;
   late VoidCallback internalHandler;
+  bool chainInitialized = false;
 
   CombiningValueNotifier3(
     TOut initialValue,
@@ -218,14 +229,15 @@ class CombiningValueNotifier3<TIn1, TIn2, TIn3, TOut>
     previousInChain1.addListener(internalHandler);
     previousInChain2.addListener(internalHandler);
     previousInChain3.addListener(internalHandler);
+    chainInitialized = true;
   }
 
   @override
   void addListener(VoidCallback listener) {
     /// if we already have a listener that means the subscription chain is already
     /// set up so we don't have to do it again.
-    if (!hasListeners) {
-      // init(previousInChain1, previousInChain2, previousInChain3);
+    if (!chainInitialized) {
+      init(previousInChain1, previousInChain2, previousInChain3);
     }
     super.addListener(listener);
   }
@@ -237,6 +249,7 @@ class CombiningValueNotifier3<TIn1, TIn2, TIn3, TOut>
       previousInChain1.removeListener(internalHandler);
       previousInChain2.removeListener(internalHandler);
       previousInChain3.removeListener(internalHandler);
+      chainInitialized = false;
     }
   }
 
@@ -260,6 +273,7 @@ class CombiningValueNotifier4<TIn1, TIn2, TIn3, TIn4, TOut>
   final ValueListenable<TIn4> previousInChain4;
   final CombiningFunction4<TIn1, TIn2, TIn3, TIn4, TOut> combiner;
   late VoidCallback internalHandler;
+  bool chainInitialized = false;
 
   CombiningValueNotifier4(
     TOut initialValue,
@@ -293,13 +307,14 @@ class CombiningValueNotifier4<TIn1, TIn2, TIn3, TIn4, TOut>
     previousInChain2.addListener(internalHandler);
     previousInChain3.addListener(internalHandler);
     previousInChain4.addListener(internalHandler);
+    chainInitialized = true;
   }
 
   @override
   void addListener(VoidCallback listener) {
     /// if we already have a listener that means the subscription chain is already
     /// set up so we don't have to do it again.
-    if (!hasListeners) {
+    if (!chainInitialized) {
       init(previousInChain1, previousInChain2, previousInChain3,
           previousInChain4);
     }
@@ -339,6 +354,7 @@ class CombiningValueNotifier5<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>
   final ValueListenable<TIn5> previousInChain5;
   final CombiningFunction5<TIn1, TIn2, TIn3, TIn4, TIn5, TOut> combiner;
   late VoidCallback internalHandler;
+  bool chainInitialized = false;
 
   CombiningValueNotifier5(
     TOut initialValue,
@@ -372,13 +388,14 @@ class CombiningValueNotifier5<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>
     previousInChain3.addListener(internalHandler);
     previousInChain4.addListener(internalHandler);
     previousInChain5.addListener(internalHandler);
+    chainInitialized = true;
   }
 
   @override
   void addListener(VoidCallback listener) {
     /// if we already have a listener that means the subscription chain is already
     /// set up so we don't have to do it again.
-    if (!hasListeners) {
+    if (!chainInitialized) {
       init(previousInChain1, previousInChain2, previousInChain3,
           previousInChain4, previousInChain5);
     }
@@ -394,6 +411,7 @@ class CombiningValueNotifier5<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>
       previousInChain3.removeListener(internalHandler);
       previousInChain4.removeListener(internalHandler);
       previousInChain5.removeListener(internalHandler);
+      chainInitialized = false;
     }
   }
 
@@ -421,6 +439,7 @@ class CombiningValueNotifier6<TIn1, TIn2, TIn3, TIn4, TIn5, TIn6, TOut>
   final ValueListenable<TIn6> previousInChain6;
   final CombiningFunction6<TIn1, TIn2, TIn3, TIn4, TIn5, TIn6, TOut> combiner;
   late VoidCallback internalHandler;
+  bool chainInitialized = false;
 
   CombiningValueNotifier6(
     TOut initialValue,
@@ -458,13 +477,14 @@ class CombiningValueNotifier6<TIn1, TIn2, TIn3, TIn4, TIn5, TIn6, TOut>
     previousInChain4.addListener(internalHandler);
     previousInChain5.addListener(internalHandler);
     previousInChain6.addListener(internalHandler);
+    chainInitialized = true;
   }
 
   @override
   void addListener(VoidCallback listener) {
     /// if we already have a listener that means the subscription chain is already
     /// set up so we don't have to do it again.
-    if (!hasListeners) {
+    if (!chainInitialized) {
       init(previousInChain1, previousInChain2, previousInChain3,
           previousInChain4, previousInChain5, previousInChain6);
     }
@@ -481,6 +501,7 @@ class CombiningValueNotifier6<TIn1, TIn2, TIn3, TIn4, TIn5, TIn6, TOut>
       previousInChain4.removeListener(internalHandler);
       previousInChain5.removeListener(internalHandler);
       previousInChain6.removeListener(internalHandler);
+      chainInitialized = false;
     }
   }
 
