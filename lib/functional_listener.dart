@@ -204,6 +204,118 @@ extension FunctionaListener<T> on ValueListenable<T> {
     );
   }
 
+  ///
+  /// Similar to what [combineLatest] does. Only change is you can listen to 3 ValueNotifiers together
+  /// usage e.g:
+  /// final subscription = listenable1
+  //         .combineLatest3<String, String, String>(
+  //             listenable2, listenable3, (i, j, s) => "$i:$j:$s")
+  //         .listen((x, _) {
+  //       print(x);
+  //     });
+  ValueListenable<TOut> combineLatest3<TIn2, TIn3, TOut>(
+      ValueListenable<TIn2> combineWith2,
+      ValueListenable<TIn3> combineWith3,
+      CombiningFunction3<T, TIn2, TIn3, TOut> combiner) {
+    return CombiningValueNotifier3<T, TIn2, TIn3, TOut>(
+      combiner(this.value, combineWith2.value, combineWith3.value),
+      this,
+      combineWith2,
+      combineWith3,
+      combiner,
+    );
+  }
+
+  ///
+  /// Similar to what [combineLatest] does. Only change is you can listen to 4 ValueNotifiers together
+  /// usage e.g:
+  /// final subscription = listenable1
+  //         .combineLatest4<String, String, String, String>(
+  //             listenable2, listenable3, listenable4, (i, j, k, s) => "$i:$j:$k:$s")
+  //         .listen((x, _) {
+  //       print(x);
+  //     });
+  ValueListenable<TOut> combineLatest4<TIn2, TIn3, TIn4, TOut>(
+      ValueListenable<TIn2> combineWith2,
+      ValueListenable<TIn3> combineWith3,
+      ValueListenable<TIn4> combineWith4,
+      CombiningFunction4<T, TIn2, TIn3, TIn4, TOut> combiner) {
+    return CombiningValueNotifier4<T, TIn2, TIn3, TIn4, TOut>(
+      combiner(this.value, combineWith2.value, combineWith3.value,
+          combineWith4.value),
+      this,
+      combineWith2,
+      combineWith3,
+      combineWith4,
+      combiner,
+    );
+  }
+
+  ///
+  /// Similar to what [combineLatest] does. Only change is you can listen to 5 ValueNotifiers together
+  /// usage e.g:
+  /// final subscription = listenable1
+  //         .combineLatest5<String, String, String, String, String>(
+  //             listenable2,
+  //             listenable3,
+  //             listenable4,
+  //             listenable5,
+  //             (i, j, k, l, s) => "$i:$j:$k:$l:$s")
+  //         .listen((x, _) {
+  //       print(x);
+  //     });
+  ValueListenable<TOut> combineLatest5<TIn2, TIn3, TIn4, TIn5, TOut>(
+      ValueListenable<TIn2> combineWith2,
+      ValueListenable<TIn3> combineWith3,
+      ValueListenable<TIn4> combineWith4,
+      ValueListenable<TIn5> combineWith5,
+      CombiningFunction5<T, TIn2, TIn3, TIn4, TIn5, TOut> combiner) {
+    return CombiningValueNotifier5<T, TIn2, TIn3, TIn4, TIn5, TOut>(
+      combiner(this.value, combineWith2.value, combineWith3.value,
+          combineWith4.value, combineWith5.value),
+      this,
+      combineWith2,
+      combineWith3,
+      combineWith4,
+      combineWith5,
+      combiner,
+    );
+  }
+
+  ///
+  /// Similar to what [combineLatest] does. Only change is you can listen to 6 ValueNotifiers together
+  /// usage e.g:
+  /// final subscription = listenable1
+  ///         .combineLatest6<String, String, String, String, String, String>(
+  ///             listenable2,
+  ///             listenable3,
+  ///             listenable4,
+  ///             listenable5,
+  ///             listenable6,
+  ///             (i, j, k, l, m, s) => "$i:$j:$k:$l:$m:$s")
+  ///         .listen((x, _) {
+  ///       print(x);
+  ///     });
+  ValueListenable<TOut> combineLatest6<TIn2, TIn3, TIn4, TIn5, TIn6, TOut>(
+      ValueListenable<TIn2> combineWith2,
+      ValueListenable<TIn3> combineWith3,
+      ValueListenable<TIn4> combineWith4,
+      ValueListenable<TIn5> combineWith5,
+      ValueListenable<TIn6> combineWith6,
+      CombiningFunction6<T, TIn2, TIn3, TIn4, TIn5, TIn6, TOut> combiner) {
+    return CombiningValueNotifier6<T, TIn2, TIn3, TIn4, TIn5, TIn6, TOut>(
+      combiner(this.value, combineWith2.value, combineWith3.value,
+          combineWith4.value, combineWith5.value, combineWith6.value),
+      this,
+      combineWith2,
+      combineWith3,
+      combineWith4,
+      combineWith5,
+      combineWith6,
+      combiner,
+    );
+  }
+
   /// Merges value changes of [this] together with value changes of a List of
   /// `ValueListenables` so that when ever any of them changes the result of
   /// [mergeWith] will change too.
