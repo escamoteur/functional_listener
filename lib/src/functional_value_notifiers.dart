@@ -48,7 +48,8 @@ abstract class FunctionalValueNotifier<TIn, TOut> extends ValueNotifier<TOut> {
   }
 }
 
-class SelectValueNotifier<TIn, TOut> extends FunctionalValueNotifier<TIn, TOut> {
+class SelectValueNotifier<TIn, TOut>
+    extends FunctionalValueNotifier<TIn, TOut> {
   final TOut Function(TIn) selector;
 
   SelectValueNotifier(
@@ -67,7 +68,7 @@ class SelectValueNotifier<TIn, TOut> extends FunctionalValueNotifier<TIn, TOut> 
         value = selected;
       }
     };
-    previousInChain.addListener(internalHandler);
+    setupChain();
   }
 }
 
