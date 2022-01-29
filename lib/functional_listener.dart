@@ -16,7 +16,7 @@ extension FunctionaListener<T> on ValueListenable<T> {
   /// let you work with a `ValueListenable` as it should be by installing a
   /// [handler] function that is called on any value change of `this` and gets
   /// the new value passed as an argument.
-  /// It returns a subscription object that lets you stopp the [handler] from
+  /// It returns a subscription object that lets you stop the [handler] from
   /// being called by calling [cancel()] on the subscription.
   /// The [handler] get the subscription object passed on every call so that it
   /// is possible to uninstall the [handler] from the [handler] itself.
@@ -35,7 +35,8 @@ extension FunctionaListener<T> on ValueListenable<T> {
   /// }
   ///
   ListenableSubscription listen(
-      void Function(T, ListenableSubscription) handler) {
+    void Function(T, ListenableSubscription) handler,
+  ) {
     final subscription = ListenableSubscription(this);
     subscription.handler = () => handler(this.value, subscription);
     this.addListener(subscription.handler);
@@ -45,7 +46,7 @@ extension FunctionaListener<T> on ValueListenable<T> {
   ///
   /// converts a ValueListenable to another type [T] by returning a new connected
   /// `ValueListenable<T>`
-  /// on each value change of `this` the conversion funcion
+  /// on each value change of `this` the conversion function
   /// [convert] is called to do the type conversion
   ///
   /// example (lets pretend that print wouldn't automatically call toString):
@@ -59,6 +60,28 @@ extension FunctionaListener<T> on ValueListenable<T> {
       convert(this.value),
       this,
       convert,
+    );
+  }
+
+  ///
+  /// [select] allows you to set a filter on a `ValueListenable` like [where],
+  /// and the returned `ValueListenable` only emit a new value when the returned value of [selector] function change.
+  ///
+  /// example
+  /// ```
+  /// ValueNotifier<Size> sourceListenable = ValueNotifier<Size>(const Size(10, 10));
+  /// int count = 0;
+  /// var subscription = sourceListenable.select<double>((x)=> x.height).listen((_, __) => count++);
+  ///
+  /// sourceListenable.value = const Size(100,10);
+  /// sourceListenable.value = const Size(200,200);
+  ///```
+  /// count will be just 1
+  ValueListenable<TResult> select<TResult>(TResult Function(T) selector) {
+    return SelectValueNotifier(
+      selector(value),
+      this,
+      selector,
     );
   }
 
@@ -170,8 +193,9 @@ extension FunctionaListener<T> on ValueListenable<T> {
   ///  ```
   ///
   ValueListenable<TOut> combineLatest<TIn2, TOut>(
-      ValueListenable<TIn2> combineWith,
-      CombiningFunction2<T, TIn2, TOut> combiner) {
+    ValueListenable<TIn2> combineWith,
+    CombiningFunction2<T, TIn2, TOut> combiner,
+  ) {
     return CombiningValueNotifier<T, TIn2, TOut>(
       combiner(this.value, combineWith.value),
       this,
@@ -228,7 +252,7 @@ class ListenableSubscription {
 
 enum CustomNotifierMode { normal, manual, always }
 
-/// Sometimes you want a Valuenotifier where you can control when its
+/// Sometimes you want a ValueNotifier where you can control when its
 /// listeners are notified. With the `CustomValueNotifier` you can do this:
 /// If you pass [CustomNotifierMode.always] for the [mode] parameter,
 /// `notifierListeners` will be called everytime you assign a value to the
@@ -236,11 +260,11 @@ enum CustomNotifierMode { normal, manual, always }
 /// previous one.
 /// If you pass [CustomNotifierMode.manual] for the [mode] parameter,
 /// `notifierListeners` will not be called when you assign a value to the
-/// [value] property. You have to call it manually to notifiy the Listeners.
-class CustomValueNotifier<T> extends ChangeNotifier
-    implements ValueListenable<T> {
+/// [value] property. You have to call it manually to notify the Listeners.
+class CustomValueNotifier<T> extends ChangeNotifier implements ValueListenable<T> {
   T _value;
   final CustomNotifierMode mode;
+
   @override
   T get value => _value;
 
