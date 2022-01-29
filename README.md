@@ -23,7 +23,7 @@ listenable.listen((x, subscription) {
   if (x == 42){
      subscription.cancel();
   }
-})
+}
 ```
 
 ## map()
@@ -46,28 +46,17 @@ or you can change the type:
 
 ## where()
 
-Lets you filter the values that a ValueListenable can have:
+Lets you filter the values that an ValueListenable can have:
 
 
 ```Dart
   ValueNotifier<int> intNotifier;  
-  bool onlyEven = false; // depending on this variable we want only even values or all
+  bool onlyEven = false; // depending on this variavble we want only even values or all
 
   final filteredNotifier = intNotifier.where( (i)=> onlyEven ? i.isEven : i );
 ``` 
 
-
-## select()
-
-Lets you ignore value changes on a ValueListenable.
-
-This is usefully when you have a complex state model, and only want to react when a specific property change.
-```Dart
-  ValueNotifier<User> notifier = ValueNotifier(User(age: 18, property2: "John"));
-
-  final birthdayNotifier = notifier.select<int>((model)=> model.age); //selectedNotifier will ignore changes that does not affect age
-``` 
-The selector function that you pass to `select` is called on every new value, but only propagate it when the returned value distinct.
+The selector function that you pass to `where` is called on every new value which means your filter criteria has not to be static but can be changed as you need like in the example where it will always use the latest value of `onlyEven` and not the one it had when `where was called`.
 
 ### chaining functions
 As all the extension function (with the exception of `listen`) return a new `ValueNotifier` we can chain these extension functions as we need them like: 
@@ -80,7 +69,7 @@ As all the extension function (with the exception of `listen`) return a new `Val
 ``` 
 
 ## debounce()
-If you don't want or can't handle too rapid value changes `debounce` is your friend. It only propagates values if there is a pause after a value changes. Most typical example is you have a search function that polls a REST API and in every change of the search term you execute a http request. To avoid overloading your REST server you probably want to avoid that a new request is made on every keypress. I makes much more sense to wait till the user stops modifying the search term for a moment.
+If you don't want or can't handle too rapid value changes `debounce` is your friend. It only propagate values if there is a pause after a value changes. Most typical example is you have a search function that polls a REST API and in every change of the search term you execute a http request. To avoid overloading your REST server you probably want to avoid that a new request is made on every keypress. I makes much more sense to wait till the user stops modifying the search term for a moment.
 
 
 ```Dart
@@ -88,7 +77,7 @@ If you don't want or can't handle too rapid value changes `debounce` is your fri
 
   searchTerm.debounce(const Duration(milliseconds: 500)).listen((s)  => callRestApi(s) );
 
-  // We ignore for this example that calling a REST API probably involves some async magic
+  // We ignore for this example that calling a REST API probably involves some asynv magic
 ``` 
 
 ## combineLatest()
@@ -139,40 +128,6 @@ listenable1.value = 46;
 Will print 42,43,44,45,46
 
 
-For details on the functions check the source documentation, the tests and the example.
-
-## CustomValueNotifier
-
-```Dart
-/// If you pass [CustomNotifierMode.always] for the [mode] parameter,
-/// `notifierListeners` will be called everytime you assign a value to the
-/// [value] property independent of if the value is different from the
-/// previous one.
-/// If you pass [CustomNotifierMode.manual] for the [mode] parameter,
-/// `notifierListeners` will not be called when you assign a value to the
-/// [value] property. You have to call it manually to notifiy the Listeners.
-class CustomValueNotifier<T> extends ChangeNotifier implements ValueListenable<T> {
-  T _value;
-  final mode;
-  @override
-  T get value => _value;
-
-  set value(T val) {
-    if (mode == CustomNotifierMode.manual) {
-      _value = val;
-      return;
-    }
-    if (val != _value || mode == CustomNotifierMode.always) {
-      _value = val;
-      notifyListeners();
-    }
-  }
-
-  CustomValueNotifier(
-    T initialValue, {
-    this.mode = CustomNotifierMode.normal,
-  }) : _value = initialValue;
-}
-```
+For details on the functions check the source documentation, the tests and the example. 
 
 If you miss a function, open an issue on GitHub or even better make an PR :-)
