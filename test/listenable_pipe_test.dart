@@ -291,6 +291,32 @@ void main() {
     expect(val, 42);
     expect(callCount, 2);
   });
+
+  test('no double chain subscriptions', () {
+    final notifier = CustomValueNotifier<int>(0, mode: CustomNotifierMode.always);
+    int callCount = 0;
+    notifier.listen((v, _) {
+      callCount++;
+    });
+
+    int chainCallCount = 0;
+    final mapNotifier = notifier.map((v) {
+      chainCallCount++;
+      return v + 1;
+    });
+
+    int mapCallCount = 0;
+    mapNotifier.listen((v, _) {
+      mapCallCount++;
+    });
+
+    notifier.value = 1;
+
+    expect(callCount, 1);
+    expect(mapNotifier.value, 2);
+    expect(mapCallCount, 1);
+    expect(chainCallCount, 2); // 1 on init, 1 after notifier.value = 1;
+  });
 }
 
 class StringIntWrapper {
