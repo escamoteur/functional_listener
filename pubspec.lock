@@ -71,10 +71,10 @@ packages:
     dependency: "direct dev"
     description:
       name: lint
-      sha256: "3e9343b1cededcfb1e8b40d0dbd3592b7a1c6c0121545663a991433390c2bc97"
+      sha256: be34dd7a16e94506dc786be82358e33162f4feba17a976431d36663df3feebe2
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.1"
+    version: "1.5.3"
   matcher:
     dependency: transitive
     description:

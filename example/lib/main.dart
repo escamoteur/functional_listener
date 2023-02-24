@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:functiona_listerner_example/model.dart';
 import 'package:functional_listener/functional_listener.dart';
@@ -29,7 +28,7 @@ class MyApp extends StatelessWidget {
 final theModel = Model();
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -67,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: ValueListenableBuilder(
+                  child: ValueListenableBuilder<String>(
                     valueListenable: theModel.debouncedUpperCaseText,
                     builder: (context, s, _) => Text(s),
                   ),
@@ -81,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ValueListenableBuilder<String>(
                 valueListenable: theModel.counterEvenValuesAsString,
                 builder: (context, value, _) => Text(value,
-                    style: Theme.of(context).textTheme.headline4,
+                    style: Theme.of(context).textTheme.headlineMedium,
                     textAlign: TextAlign.center),
               ),
               Text(
@@ -93,9 +92,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 /// Simple example of `combineLatest` without an wrapper class
                 /// because the combiner function combines both values to one single string
                 valueListenable: theModel.debouncedUpperCaseText.combineLatest(
-                    theModel.counterEvenValuesAsString, (s1, s2) => '$s1:$s2'),
+                    theModel.counterEvenValuesAsString,
+                    (s1, dynamic s2) => '$s1:$s2'),
                 builder: (context, value, _) => Text(value,
-                    style: Theme.of(context).textTheme.headline4,
+                    style: Theme.of(context).textTheme.headlineMedium,
                     textAlign: TextAlign.center),
               ),
             ],
