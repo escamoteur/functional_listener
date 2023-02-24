@@ -6,7 +6,7 @@ homepage: https://github.com/escamoteur/functional_listener
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
-  flutter: ">=1.17.0 <2.0.0"
+  flutter: ">=3.0.0"
 
 dependencies:
   flutter:
