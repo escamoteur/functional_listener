@@ -1,7 +1,26 @@
+## [2.3.0] - 28.02.2023
+
+* added `async()` extension method
+
+```dart
+
+  /// ValueListenable are inherently synchronous. In most cases this is what you
+  /// want. But if for example your ValueListenable gets updated inside a build
+  /// method of a widget which would trigger a rebuild because your widgets is
+  /// listening to the ValueListenable you get an exception that you called setState
+  /// inside a build method.
+  /// By using [async] you push the update of the ValueListenable to the next
+  /// frame. This way you can update the ValueListenable inside a build method
+  /// without getting an exception.
+  ValueListenable<T> async();
+```
+* `CustomValueNotifier` got a new property `asyncNotification` which if set to true postpones the notifications of listeners to the end of the frame which can be helpful if you run into Exceptions about 'calling setState inside a build function' e.g. if you monitor the `CustomValueNotifier` with the get_it_mixin and you update it inside the build function. Default is false.
+
 ## [2.2.0] - 24.02.2023
 
 * added listenerCount to CustomValueNotfier
-## [2.1.0] - 29.01.2022
+
+# [2.1.0] - 29.01.2022
 
 * merged several PRs with bugfixes
 * adds the `select()` method see the readme

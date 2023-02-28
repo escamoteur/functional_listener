@@ -25,7 +25,8 @@ void main() {
   });
 
   test('Select Test', () {
-    final sourceListenable = ValueNotifier<StringIntWrapper>(StringIntWrapper("fiz", 0));
+    final sourceListenable =
+        ValueNotifier<StringIntWrapper>(StringIntWrapper("fiz", 0));
     final stringDestListenable = sourceListenable.select<String>((x) => x.s);
 
     String? stringDestValue;
@@ -108,25 +109,17 @@ void main() {
     expect(destValues.length, 2);
   });
 
-  test('Debounce Test', () async {
+  test('async Test', () async {
     final listenable = ValueNotifier<int>(0);
 
     final destValues = <int>[];
-    listenable
-        .debounce(const Duration(milliseconds: 500))
-        .listen((x, _) => destValues.add(x));
+    listenable.async().listen((x, _) => destValues.add(x));
 
     listenable.value = 42;
+    expect(destValues, []);
     await Future.delayed(const Duration(milliseconds: 100));
-    listenable.value = 43;
-    await Future.delayed(const Duration(milliseconds: 100));
-    listenable.value = 44;
-    await Future.delayed(const Duration(milliseconds: 350));
-    listenable.value = 45;
-    await Future.delayed(const Duration(milliseconds: 550));
-    listenable.value = 46;
 
-    expect(destValues, [45]);
+    expect(destValues, [42]);
   });
 
   test('combineLatest Test', () {
@@ -470,7 +463,8 @@ void main() {
   });
 
   test('no double chain subscriptions', () {
-    final notifier = CustomValueNotifier<int>(0, mode: CustomNotifierMode.always);
+    final notifier =
+        CustomValueNotifier<int>(0, mode: CustomNotifierMode.always);
     int callCount = 0;
     notifier.listen((v, _) {
       callCount++;

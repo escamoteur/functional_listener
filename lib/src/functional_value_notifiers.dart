@@ -137,6 +137,23 @@ class DebouncedValueNotifier<T> extends FunctionalValueNotifier<T, T> {
   }
 }
 
+class AsyncValueNotifier<T> extends FunctionalValueNotifier<T, T> {
+  AsyncValueNotifier(
+    T initialValue,
+    ValueListenable<T> previousInChain,
+  ) : super(initialValue, previousInChain) {
+    init(previousInChain);
+  }
+
+  @override
+  void init(ValueListenable<T> previousInChain) {
+    internalHandler = () {
+      Future(() => value = previousInChain.value);
+    };
+    setupChain();
+  }
+}
+
 typedef CombiningFunction2<TIn1, TIn2, TOut> = TOut Function(TIn1, TIn2);
 
 class CombiningValueNotifier<TIn1, TIn2, TOut> extends ValueNotifier<TOut> {

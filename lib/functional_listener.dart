@@ -147,6 +147,21 @@ extension FunctionaListener<T> on ValueListenable<T> {
     return DebouncedValueNotifier(this.value, this, timeOut);
   }
 
+  /// ValueListenable are inherently synchronous. In most cases this is what you
+  /// want. But if for example your ValueListenable gets updated inside a build
+  /// method of a widget which would trigger a rebuild because your widgets is
+  /// listening to the ValueListenable you get an exception that you called setState
+  /// inside a build method.
+  /// By using [async] you push the update of the ValueListenable to the next
+  /// frame. This way you can update the ValueListenable inside a build method
+  /// without getting an exception.
+  ValueListenable<T> async() {
+    return AsyncValueNotifier(
+      this.value,
+      this,
+    );
+  }
+
   ///
   /// Imagine having two `ValueNotifier` in you model and you want to update
   /// a certain region of the screen with their values every time one of them
@@ -382,6 +397,10 @@ class CustomValueNotifier<T> extends ChangeNotifier
   final CustomNotifierMode mode;
   int listenerCount = 0;
 
+  /// If true, the listeners will be notified asynchronously, which can be helpful
+  /// if you encounter problems that you trigger rebuilds during the build phase.
+  final bool asyncNotification;
+
   @override
   T get value => _value;
 
@@ -397,14 +416,18 @@ class CustomValueNotifier<T> extends ChangeNotifier
   }
 
   @override
-  // ignore: unnecessary_overrides
   void notifyListeners() {
-    super.notifyListeners();
+    if (asyncNotification) {
+      Future(() => super.notifyListeners);
+    } else {
+      super.notifyListeners();
+    }
   }
 
   CustomValueNotifier(
     T initialValue, {
     this.mode = CustomNotifierMode.normal,
+    this.asyncNotification = false,
   }) : _value = initialValue;
   @override
   void addListener(void Function() listener) {
