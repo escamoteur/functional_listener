@@ -418,6 +418,29 @@ void main() {
     expect(val, 42);
     expect(callCount, 1);
   });
+  test('CustomValueNotifier async Notification', () async {
+    final notifier = CustomValueNotifier<int>(4711, asyncNotification: true);
+    int val = 0;
+    int callCount = 0;
+
+    notifier.addListener(() {
+      val = notifier.value;
+      callCount++;
+    });
+
+    expect(notifier.value, 4711);
+    notifier.value = 4711;
+    expect(notifier.value, 4711);
+    await Future<void>.delayed(Duration.zero);
+    expect(val, 0);
+
+    notifier.value = 42;
+    expect(notifier.value, 42);
+    await Future<void>.delayed(Duration.zero);
+    expect(val, 42);
+    expect(callCount, 1);
+  });
+
   test('CustomValueNotifier a manual notify', () {
     final notifier =
         CustomValueNotifier<int>(4711, mode: CustomNotifierMode.manual);

@@ -418,7 +418,7 @@ class CustomValueNotifier<T> extends ChangeNotifier
   @override
   void notifyListeners() {
     if (asyncNotification) {
-      Future(() => super.notifyListeners);
+      Future(() => super.notifyListeners());
     } else {
       super.notifyListeners();
     }

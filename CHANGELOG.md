@@ -1,3 +1,6 @@
+## [2.3.1] - 28.02.2023
+
+* stupid bug fix
 ## [2.3.0] - 28.02.2023
 
 * added `async()` extension method
