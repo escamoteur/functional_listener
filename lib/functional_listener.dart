@@ -4,6 +4,8 @@ library functional_listener;
 import 'package:flutter/foundation.dart';
 import 'package:functional_listener/src/functional_value_notifiers.dart';
 
+export 'package:functional_listener/src/custom_value_notifier.dart';
+
 /// extension functions on `ValueListenable` that allows you to work with them almost
 /// as if it was a synchronous stream. Each extension function returns a new
 /// `ValueNotifier` that updates its value when the value of `this` changes
@@ -37,7 +39,7 @@ extension FunctionaListener<T> on ValueListenable<T> {
   ListenableSubscription listen(
     void Function(T, ListenableSubscription) handler,
   ) {
-    final subscription = ListenableSubscription(this);
+    final subscription = ListenableSubscription(endOfPipe: this);
     subscription.handler = () => handler(this.value, subscription);
     this.addListener(subscription.handler);
     return subscription;
@@ -362,88 +364,22 @@ extension FunctionaListener<T> on ValueListenable<T> {
 /// Object that is returned by [listen] that allows you to stop the calling of the
 /// handler that you passed to it.
 class ListenableSubscription {
-  final ValueListenable endOfPipe;
+  final ValueListenable? endOfPipe;
+  final Listenable? simpleListenble;
   late VoidCallback handler;
   bool canceled = false;
 
-  ListenableSubscription(this.endOfPipe);
+  ListenableSubscription({this.endOfPipe, this.simpleListenble})
+      : assert(endOfPipe != null || simpleListenble != null),
+        assert(!(endOfPipe != null && simpleListenble != null));
 
   /// Removes the handler that you installed with [listen]
   /// It's save to call cancel on an already canceled subscription
   void cancel() {
     if (!canceled) {
-      endOfPipe.removeListener(handler);
+      simpleListenble?.removeListener(handler);
+      endOfPipe?.removeListener(handler);
       canceled = true;
     }
-  }
-}
-
-enum CustomNotifierMode { normal, manual, always }
-
-/// Sometimes you want a ValueNotifier where you can control when its
-/// listeners are notified. With the `CustomValueNotifier` you can do this:
-/// If you pass [CustomNotifierMode.always] for the [mode] parameter,
-/// `notifierListeners` will be called everytime you assign a value to the
-/// [value] property independent of if the value is different from the
-/// previous one.
-/// If you pass [CustomNotifierMode.manual] for the [mode] parameter,
-/// `notifierListeners` will not be called when you assign a value to the
-/// [value] property. You have to call it manually to notify the Listeners.
-/// Aditionally it has a [listenerCount] property that tells you how many
-/// listeners are currently listening to the notifier.
-class CustomValueNotifier<T> extends ChangeNotifier
-    implements ValueListenable<T> {
-  T _value;
-  final CustomNotifierMode mode;
-  int listenerCount = 0;
-
-  /// If true, the listeners will be notified asynchronously, which can be helpful
-  /// if you encounter problems that you trigger rebuilds during the build phase.
-  final bool asyncNotification;
-
-  @override
-  T get value => _value;
-
-  set value(T val) {
-    if (mode == CustomNotifierMode.manual) {
-      _value = val;
-      return;
-    }
-    if (val != _value || mode == CustomNotifierMode.always) {
-      _value = val;
-      notifyListeners();
-    }
-  }
-
-  @override
-  void notifyListeners() {
-    if (asyncNotification) {
-      Future(() => super.notifyListeners());
-    } else {
-      super.notifyListeners();
-    }
-  }
-
-  CustomValueNotifier(
-    T initialValue, {
-    this.mode = CustomNotifierMode.normal,
-    this.asyncNotification = false,
-  }) : _value = initialValue;
-  @override
-  void addListener(void Function() listener) {
-    super.addListener(listener);
-    listenerCount++;
-  }
-
-  @override
-  void removeListener(void Function() listener) {
-    super.removeListener(listener);
-    listenerCount--;
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    listenerCount = 0;
   }
 }

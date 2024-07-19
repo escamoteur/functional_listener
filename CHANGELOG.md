@@ -1,8 +1,10 @@
+## [3.0.0] - 19.07.2024
+* added optional error handler for CustomValueNotifier in case one of the listeners throws an Exception
+* added` `listen() extension method for normal Listenable
 ## [2.3.1] - 28.02.2023
 
 * stupid bug fix
 ## [2.3.0] - 28.02.2023
-
 * added `async()` extension method
 
 ```dart

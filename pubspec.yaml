@@ -1,12 +1,10 @@
 name: functional_listener
 description: An rx like extension methods on ValueListenable type, that lets you work with ValueNotifiers almost like with Streams
-version: 2.3.1
-author: Thomas Burkhart
+version: 3.0.0
 homepage: https://github.com/escamoteur/functional_listener
 
 environment:
-  sdk: '>=2.18.0 <3.0.0'
-  flutter: ">=3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:

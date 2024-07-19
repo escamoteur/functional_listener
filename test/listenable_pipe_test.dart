@@ -69,7 +69,7 @@ void main() {
     expect(destValue, 42);
   });
 
-  test('Listen Test with interal cancel', () {
+  test('Listen Test with internal cancel', () {
     final listenable = ValueNotifier<int>(0);
 
     int? destValue;
@@ -88,6 +88,42 @@ void main() {
 
     expect(destValue, 42);
   });
+  test('Listen Test ChangeNotifier', () {
+    final listenable = ChangeNotifier();
+
+    int destValue = 0;
+    final subscription = listenable.listen((_) => destValue++);
+
+    listenable.notifyListeners();
+    expect(destValue, 1);
+
+    subscription.cancel();
+
+    listenable.notifyListeners();
+
+    expect(destValue, 1);
+  });
+  test(
+      'Listen Test ChangeNotifier with internal cancel after first notification',
+      () {
+    final listenable = ChangeNotifier();
+
+    int destValue = 0;
+    listenable.listen((subscription) {
+      destValue++;
+      if (destValue == 1) {
+        subscription.cancel();
+      }
+    });
+
+    listenable.notifyListeners();
+    expect(destValue, 1);
+
+    listenable.notifyListeners();
+
+    expect(destValue, 1);
+  });
+
   test('Where Test', () {
     final listenable = ValueNotifier<int>(0);
 
@@ -439,6 +475,44 @@ void main() {
     await Future<void>.delayed(Duration.zero);
     expect(val, 42);
     expect(callCount, 1);
+  });
+
+  test('CustomValueNotifier with error in handler and error handler', () {
+    Object? error;
+    final notifier =
+        CustomValueNotifier<int>(4711, onError: (e, stackTrace) => error = e);
+
+    notifier.addListener(() {
+      throw Exception('Error in handler');
+    });
+
+    expect(notifier.value, 4711);
+    notifier.value = 4711;
+    expect(notifier.value, 4711);
+    expect(error, null);
+    notifier.value = 42;
+    expect(notifier.value, 42);
+    expect(error, isA<Exception>());
+  });
+  test(
+      'CustomValueNotifier async notification with error in handler and error handler',
+      () async {
+    Object? error;
+    final notifier = CustomValueNotifier<int>(4711,
+        asyncNotification: true, onError: (e, stackTrace) => error = e);
+
+    notifier.addListener(() {
+      throw Exception('Error in handler');
+    });
+
+    expect(notifier.value, 4711);
+    notifier.value = 4711;
+    expect(notifier.value, 4711);
+    expect(error, null);
+    notifier.value = 42;
+    await Future<void>.delayed(Duration.zero);
+    expect(notifier.value, 42);
+    expect(error, isA<Exception>());
   });
 
   test('CustomValueNotifier a manual notify', () {
