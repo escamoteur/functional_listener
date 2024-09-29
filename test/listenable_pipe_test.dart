@@ -22,6 +22,7 @@ void main() {
     sourceListenable.value = 4711;
 
     expect(destValue, '42');
+    expect(destListenable.value, '4711');
   });
 
   test('Select Test', () {
