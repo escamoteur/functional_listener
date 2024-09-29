@@ -1,3 +1,5 @@
+## [4.0.0] - 29.9.2024
+* Following the findings of https://github.com/escamoteur/functional_listener/issues/13 we no longer destroy the listener chain when the last listener is removed. Because this might change the behavior of your app this is seen as a breaking change and therefore the change to 4.0.0. Please observe if this leads to increasing memory usage
 ## [3.0.0] - 19.07.2024
 * added optional error handler for CustomValueNotifier in case one of the listeners throws an Exception
 * added` `listen() extension method for normal Listenable

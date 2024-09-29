@@ -186,16 +186,6 @@ class CombiningValueNotifier<TIn1, TIn2, TOut> extends ValueNotifier<TOut> {
   }
 
   @override
-  void removeListener(VoidCallback listener) {
-    super.removeListener(listener);
-    if (!hasListeners) {
-      previousInChain1.removeListener(internalHandler);
-      previousInChain2.removeListener(internalHandler);
-      chainInitialized = false;
-    }
-  }
-
-  @override
   void dispose() {
     previousInChain1.removeListener(internalHandler);
     previousInChain2.removeListener(internalHandler);
@@ -249,17 +239,6 @@ class CombiningValueNotifier3<TIn1, TIn2, TIn3, TOut>
       init(previousInChain1, previousInChain2, previousInChain3);
     }
     super.addListener(listener);
-  }
-
-  @override
-  void removeListener(VoidCallback listener) {
-    super.removeListener(listener);
-    if (!hasListeners) {
-      previousInChain1.removeListener(internalHandler);
-      previousInChain2.removeListener(internalHandler);
-      previousInChain3.removeListener(internalHandler);
-      chainInitialized = false;
-    }
   }
 
   @override
@@ -331,17 +310,6 @@ class CombiningValueNotifier4<TIn1, TIn2, TIn3, TIn4, TOut>
   }
 
   @override
-  void removeListener(VoidCallback listener) {
-    super.removeListener(listener);
-    if (!hasListeners) {
-      previousInChain1.removeListener(internalHandler);
-      previousInChain2.removeListener(internalHandler);
-      previousInChain3.removeListener(internalHandler);
-      previousInChain4.removeListener(internalHandler);
-    }
-  }
-
-  @override
   void dispose() {
     previousInChain1.removeListener(internalHandler);
     previousInChain2.removeListener(internalHandler);
@@ -409,19 +377,6 @@ class CombiningValueNotifier5<TIn1, TIn2, TIn3, TIn4, TIn5, TOut>
           previousInChain4, previousInChain5);
     }
     super.addListener(listener);
-  }
-
-  @override
-  void removeListener(VoidCallback listener) {
-    super.removeListener(listener);
-    if (!hasListeners) {
-      previousInChain1.removeListener(internalHandler);
-      previousInChain2.removeListener(internalHandler);
-      previousInChain3.removeListener(internalHandler);
-      previousInChain4.removeListener(internalHandler);
-      previousInChain5.removeListener(internalHandler);
-      chainInitialized = false;
-    }
   }
 
   @override
@@ -501,20 +456,6 @@ class CombiningValueNotifier6<TIn1, TIn2, TIn3, TIn4, TIn5, TIn6, TOut>
   }
 
   @override
-  void removeListener(VoidCallback listener) {
-    super.removeListener(listener);
-    if (!hasListeners) {
-      previousInChain1.removeListener(internalHandler);
-      previousInChain2.removeListener(internalHandler);
-      previousInChain3.removeListener(internalHandler);
-      previousInChain4.removeListener(internalHandler);
-      previousInChain5.removeListener(internalHandler);
-      previousInChain6.removeListener(internalHandler);
-      chainInitialized = false;
-    }
-  }
-
-  @override
   void dispose() {
     previousInChain1.removeListener(internalHandler);
     previousInChain2.removeListener(internalHandler);
@@ -550,14 +491,6 @@ class MergingValueNotifiers<T> extends FunctionalValueNotifier<T, T> {
 
     internalHandler = () => value = previousInChain.value;
     setupChain();
-  }
-
-  @override
-  void removeListener(VoidCallback listener) {
-    super.removeListener(listener);
-    if (!hasListeners) {
-      disposeFuncs.forEach(_callSelf);
-    }
   }
 
   void _callSelf(VoidCallback handler) => handler.call();
