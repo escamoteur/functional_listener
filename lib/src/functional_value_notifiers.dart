@@ -6,15 +6,16 @@ import 'package:flutter/foundation.dart';
 ///
 abstract class FunctionalValueNotifier<TIn, TOut> extends ValueNotifier<TOut> {
   final ValueListenable<TIn> previousInChain;
+  FunctionalValueNotifier? nextInChain;
   late VoidCallback internalHandler;
 
   @protected
   bool chainInitialized = false;
 
   FunctionalValueNotifier(
-    TOut initialValue,
+    super.initialValue,
     this.previousInChain,
-  ) : super(initialValue);
+  );
 
   void init(ValueListenable<TIn> previousInChain);
 
@@ -548,11 +549,13 @@ class MergingValueNotifiers<T> extends FunctionalValueNotifier<T, T> {
 
   @override
   void init(ValueListenable<T> previousInChain) {
-    disposeFuncs = mergeWith.map<VoidCallback>((notifier) {
-      final notifyHandler = () => value = notifier.value;
-      notifier.addListener(notifyHandler);
-      return () => notifier.removeListener(notifyHandler);
-    }).toList();
+    disposeFuncs = mergeWith.map<VoidCallback>(
+      (notifier) {
+        final notifyHandler = () => value = notifier.value;
+        notifier.addListener(notifyHandler);
+        return () => notifier.removeListener(notifyHandler);
+      },
+    ).toList();
 
     internalHandler = () => value = previousInChain.value;
     setupChain();
