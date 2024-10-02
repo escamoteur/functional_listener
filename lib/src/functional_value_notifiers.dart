@@ -6,7 +6,6 @@ import 'package:flutter/foundation.dart';
 ///
 abstract class FunctionalValueNotifier<TIn, TOut> extends ValueNotifier<TOut> {
   final ValueListenable<TIn> previousInChain;
-  FunctionalValueNotifier? nextInChain;
   late VoidCallback internalHandler;
 
   @protected
