@@ -1,3 +1,5 @@
+## [4.1.0] - 02.10.2024
+* adding debounce as extenstion method on `Listenable`
 ## [4.0.0] - 29.9.2024
 * Following the findings of https://github.com/escamoteur/functional_listener/issues/13 we no longer destroy the listener chain when the last listener is removed. Because this might change the behavior of your app this is seen as a breaking change and therefore the change to 4.0.0. Please observe if this leads to increasing memory usage
 ## [3.0.0] - 19.07.2024
