@@ -1,3 +1,5 @@
+> This repository is archived! all future development will happen at  https://github.com/flutter-it/listen_it
+
 # functional_listener
 
 Extension functions on `ValueListenable` that allows you to work with them almost as if it was a synchronous stream. Each extension function returns a new `ValueNotifier` that updates its value when the value of `this` changes. You can chain these functions to build complex processing pipelines from a simple `ValueListenable`.
